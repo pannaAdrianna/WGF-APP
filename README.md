@@ -9,11 +9,12 @@
 - `firebase login`
 - `firebase init`
 
-### HOSTING 
-- settings
--- existing project:
--- single app: N (?)
--- Overwriting: Y 
+### HOSTING
+
+#### SETTINGS:
+- Existing project (set up in [console](https://console.firebase.google.com/))
+- Single app: N (?)
+- Overwriting: Y
 
 ### DEPLOYMENT
 Every time after changes to show on [SITE](https://moje-eeg.web.app/)
