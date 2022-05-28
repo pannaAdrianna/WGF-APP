@@ -17,6 +17,17 @@ const navConfig = [
     icon: getIcon('eva:people-fill'),
   },
   {
+    title: 'eegtest',
+    path: '/dashboard/eegtest',
+    icon: getIcon('eva:people-fill'),
+  },
+  {
+    title: 'visualize',
+    path: '/dashboard/test/visualize',
+    icon: getIcon('eva:people-fill'),
+  },
+
+  /* {
     title: 'product',
     path: '/dashboard/products',
     icon: getIcon('eva:shopping-bag-fill'),
@@ -25,8 +36,7 @@ const navConfig = [
     title: 'blog',
     path: '/dashboard/blog',
     icon: getIcon('eva:file-text-fill'),
-  },
-  {
+  }, {
     title: 'login',
     path: '/login',
     icon: getIcon('eva:lock-fill'),
@@ -36,11 +46,12 @@ const navConfig = [
     path: '/register',
     icon: getIcon('eva:person-add-fill'),
   },
-  {
+    {
+
     title: 'Not found',
     path: '/404',
     icon: getIcon('eva:alert-triangle-fill'),
-  },
+  }, */
 ];
 
 export default navConfig;

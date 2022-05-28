@@ -17,7 +17,7 @@ import navConfig from './NavConfig';
 
 // ----------------------------------------------------------------------
 
-const DRAWER_WIDTH = 280;
+const DRAWER_WIDTH = 240;
 
 const RootStyle = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('lg')]: {
@@ -65,14 +65,14 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       </Box>
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
-        <Link underline="none" component={RouterLink} to="#">
+        <Link underline='none' component={RouterLink} to='#'>
           <AccountStyle>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Avatar src={account.photoURL} alt='photoURL' />
             <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+              <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
                 {account.displayName}
               </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                 {account.role}
               </Typography>
             </Box>
@@ -85,25 +85,25 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ flexGrow: 1 }} />
 
       <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
-        <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
-          <Box
-            component="img"
-            src="/static/illustrations/illustration_avatar.png"
+        <Stack alignItems='center' spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
+          {/* <Box
+            component='img'
+            src='/static/illustrations/illustration_avatar.png'
             sx={{ width: 100, position: 'absolute', top: -50 }}
-          />
+          /> */}
 
-          <Box sx={{ textAlign: 'center' }}>
+          {/*  <Box sx={{ textAlign: 'center' }}>
             <Typography gutterBottom variant="h6">
               Get more?
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               From only $69
             </Typography>
-          </Box>
+          </Box> */}
 
-          <Button href="https://material-ui.com/store/items/minimal-dashboard/" target="_blank" variant="contained">
+          {/* <Button href="https://material-ui.com/store/items/minimal-dashboard/" target="_blank" variant="contained">
             Upgrade to Pro
-          </Button>
+          </Button> */}
         </Stack>
       </Box>
     </Scrollbar>
@@ -126,7 +126,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       {isDesktop && (
         <Drawer
           open
-          variant="persistent"
+          variant='persistent'
           PaperProps={{
             sx: {
               width: DRAWER_WIDTH,
