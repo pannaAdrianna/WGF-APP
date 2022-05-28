@@ -5,6 +5,8 @@
 - Install dependencies: `npm install` or `yarn install`
 - Start the project: `npm run start` or `yarn start`
 
+To start development on localhost run ```yarn start dev```
+
 ## FIREBASE
 - `firebase login`
 - `firebase init`
@@ -16,7 +18,7 @@
 - Single app: N (?)
 - Overwriting: Y
 
-### DEPLOYMENT
+### UPDATING SITE
 Every time after changes to show on [SITE](https://moje-eeg.web.app/)
 
 - `yarn build`
@@ -24,10 +26,3 @@ Every time after changes to show on [SITE](https://moje-eeg.web.app/)
 
 Open site [LINK](https://moje-eeg.web.app/) if not updated cmd+r (refresh sire)
 
-## License
-
-Distributed under the MIT License. See [LICENSE](https://github.com/minimal-ui-kit/minimal.free/blob/main/LICENSE.md) for more information.
-
-## Contact us
-
-Email Us: support@minimals.cc
