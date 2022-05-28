@@ -6,21 +6,22 @@
 - Start the project: `npm run start` or `yarn start`
 
 ## FIREBASE
-`firebase login`
-`firebase init`
-HOSTING 
-existing project:
-single app: N (?)
-Overwriting: Y 
+- `firebase login`
+- `firebase init`
 
-## DEPLOYMENT
-`yarn build`
-`firebase deploy`
+### HOSTING 
+- settings
+-- existing project:
+-- single app: N (?)
+-- Overwriting: Y 
+
+### DEPLOYMENT
+Every time after changes to show on [SITE](https://moje-eeg.web.app/)
+
+- `yarn build`
+- `firebase deploy`
 
 Open site [LINK](https://moje-eeg.web.app/) if not updated cmd+r (refresh sire)
-
-
-## DEPLOYMENT
 
 ## License
 
