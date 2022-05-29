@@ -1,3 +1,4 @@
+import React from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
@@ -13,6 +14,10 @@ import DashboardApp from './pages/DashboardApp';
 import Band from './pages/Band/BandProcess';
 import EEGTest from './pages/EEGTest';
 import Visualize from './pages/Visualize';
+import { PageSwitcher } from './pages/Band/PageSwitcher/PageSwitcher';
+import { AppProvider } from '@shopify/polaris';
+import enTranslations from '@shopify/polaris/locales/en.json';
+
 
 // ----------------------------------------------------------------------
 

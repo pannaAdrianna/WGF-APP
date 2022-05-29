@@ -1,8 +1,11 @@
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import React, { useState, useCallback } from 'react';
 import { MuseClient } from 'muse-js';
 import { Button, Container, Grid, Stack, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
+import enTranslations from '@shopify/polaris/locales/en.json';
+import { AppProvider } from '@shopify/polaris';
+
 
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
@@ -13,6 +16,7 @@ import StepContent from '@mui/material/StepContent';
 
 import Page from '../../components/Page';
 import Card from '../../theme/overrides/Card';
+import { PageSwitcher } from './PageSwitcher/PageSwitcher';
 
 
 const steps = [
@@ -36,7 +40,9 @@ const steps = [
 
 export default function Band() {
   const [activeStep, setActiveStep] = React.useState(0);
+  const navigate = useNavigate();
 
+  const [chartVisibility, setChartVisibility] = useState(false);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -51,18 +57,17 @@ export default function Band() {
   };
 
   const startConnection = () => {
-    console.log('Connection start')
+    console.log('Connection start');
 
-  }
+  };
 
   return (
     <Page title='Muse Connection'>
       <Container>
-        {/*<Stack direction='row' alignItems='center' justifyContent='space-between' mb={2}>*/}
+
         <Typography variant='h4' gutterBottom>
           Process odczytu z opaski
         </Typography>
-        {/*<Box sx={{ maxWidth: 400 }}>*/}
         <Stepper activeStep={activeStep} orientation='vertical'>
           {steps.map((step, index) => (
             <Step key={step.label}>
@@ -108,15 +113,20 @@ export default function Band() {
 
         {activeStep === steps.length && (
           <Paper square elevation={0} sx={{ p: 3 }}>
-            <Typography>All steps completed - You can start</Typography>
-            <Button variant='contained'  onClick={startConnection}>Start registration</Button>
+            <Typography>All steps completed - You can start now </Typography>
+            <Button variant='contained' onClick={() => {
+              setChartVisibility(true);
+            }}>Start registration</Button>
           </Paper>
         )}
-        {/*</Box>*/}
+
+        {chartVisibility ? (
 
 
-        {/*</Stack>*/}
+          <PageSwitcher />
 
+
+        ) : null}
 
       </Container>
     </Page>

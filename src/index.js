@@ -1,7 +1,9 @@
 // scroll bar
+import React from 'react';
 import 'simplebar/src/simplebar.css';
 
 import ReactDOM from 'react-dom';
+
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 
@@ -10,7 +12,9 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import reportWebVitals from './reportWebVitals';
 import { AppProvider } from '@shopify/polaris';
+
 import enTranslations from '@shopify/polaris/locales/en.json';
+
 
 // ----------------------------------------------------------------------
 
