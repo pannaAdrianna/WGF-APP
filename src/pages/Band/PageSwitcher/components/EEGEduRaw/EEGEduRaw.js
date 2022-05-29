@@ -27,7 +27,6 @@ import { default as chartTranslations } from './translations/en.json';
 
 import { generateXTics } from '../../utils/chartUtils';
 
-ChartJS.register(...registerables);
 
 export function getSettings() {
   return {

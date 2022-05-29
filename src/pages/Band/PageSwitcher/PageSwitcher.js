@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { MuseClient } from 'muse-js';
-import { Select, Card, Stack, Button, ButtonGroup, Checkbox } from '@shopify/polaris';
+import { Select, Card, Stack, ButtonGroup } from '@shopify/polaris';
 
 import { mockMuseEEG } from './utils/mockMuseEEG';
 import { default as translations } from './pageSwitcherTranslations/en.json';
@@ -9,6 +9,7 @@ import { emptyAuxChannelData } from './components/chartOptions';
 
 import * as funIntro from './components/EEGEduIntro/EEGEduIntro';
 import * as funRaw from './components/EEGEduRaw/EEGEduRaw';
+import { Button, Checkbox } from '@mui/material';
 
 
 const intro = translations.types.intro;
