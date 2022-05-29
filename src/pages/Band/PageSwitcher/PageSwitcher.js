@@ -87,7 +87,6 @@ export function PageSwitcher() {
 
   function buildPipes(value) {
     funIntro.buildPipe(introSettings);
-
     funRaw.buildPipe(rawSettings);
 
   }
@@ -224,14 +223,14 @@ export function PageSwitcher() {
           />
         </Stack>
       </Card>
-      <Card title={translations.title} sectioned>
+      {/*<Card title={translations.title} sectioned>
         <Select
           label={''}
           options={chartTypes}
           onChange={handleSelectChange}
           value={selected}
         />
-      </Card>
+      </Card>*/}
       {pipeSettingsDisplay()}
       {renderModules()}
       {renderRecord()}
