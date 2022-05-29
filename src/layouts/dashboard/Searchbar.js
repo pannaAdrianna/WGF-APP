@@ -55,6 +55,7 @@ export default function Searchbar() {
         <Slide direction="down" in={isOpen} mountOnEnter unmountOnExit>
           <SearchbarStyle>
             <Input
+              /* eslint-disable-next-line jsx-a11y/no-autofocus */
               autoFocus
               fullWidth
               disableUnderline
