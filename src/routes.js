@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
-import DashboardLayout from './layouts/dashboard';
+import { DashboardLayout } from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 
@@ -30,7 +30,6 @@ export default function Router() {
       children: [
         { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
-        // { path: 'blog', element: <Blog /> },
         { path: 'band', element: <Band /> },
         { path: 'eegtest', element: <EEGTest /> },
         {

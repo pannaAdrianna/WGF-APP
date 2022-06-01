@@ -14,19 +14,24 @@ import reportWebVitals from './reportWebVitals';
 import { AppProvider } from '@shopify/polaris';
 
 import enTranslations from '@shopify/polaris/locales/en.json';
+import { AuthProvider } from './sections/auth/contexts/AuthContext';
 
 
 // ----------------------------------------------------------------------
 
 ReactDOM.render(
   <React.StrictMode>
-    <AppProvider i18n={enTranslations}>
-      <HelmetProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </HelmetProvider>
-    </AppProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <AppProvider i18n={enTranslations}>
+          <HelmetProvider>
+
+            <App />
+
+          </HelmetProvider>
+        </AppProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root'),
 );

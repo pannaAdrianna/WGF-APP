@@ -1,23 +1,28 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useOutlet } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
-import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel, Box } from '@mui/material';
+import { Alert, LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../../../components/Iconify';
 import { useAuth } from '../contexts/AuthContext';
+import { logInWithEmailAndPassword } from '../../../Firebase';
+import CloseIcon from '@mui/icons-material/Close';
 
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
-  const navigate = useNavigate();
+
+  const outlet = useOutlet();
 
   const [showPassword, setShowPassword] = useState(false);
-
-
-
+  const [error, setError] = useState('');
+  const [errorType, setErrorType] = useState('error');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(true);
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
@@ -30,15 +35,35 @@ export default function LoginForm() {
       remember: true,
     },
     validationSchema: LoginSchema,
-    onSubmit: async () => {
+    onSubmit: () => {
+      setLoading(true);
+      setError('');
+      console.log('login', formik);
+      logInWithEmailAndPassword(formik.values.email, formik.values.password)
+        .then((res) => {
+          // console.log(res.user)
 
-      console.log(values);
-      // await login(values.email, values.password);
-      navigate('/dashboard/app', { replace: true });
+          if (res.user) {
+            setErrorType('success');
+            setError('Successed');
+            setLoading(false);
+            navigate('/dashboard/app')
+          }
+
+
+
+        })
+        .catch(err => {
+          setErrorType('error');
+          setError(err.message);
+          setLoading(false);
+        });
+      setLoading(false);
     },
   });
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
+
+  const { errors, touched, values, handleSubmit, getFieldProps } = formik;
 
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
@@ -47,6 +72,24 @@ export default function LoginForm() {
 
   return (
     <FormikProvider value={formik}>
+      {error && <Alert
+        action={
+          <IconButton
+            aria-label='close'
+            color='inherit'
+            size='small'
+            onClick={() => {
+              setOpen(false);
+            }}
+          >
+            <CloseIcon fontSize='inherit' />
+          </IconButton>
+        }
+        severity={errorType}
+        sx={{ mb: 2 }}
+      >
+        {error}
+      </Alert>}
       <Form autoComplete='off' noValidate onSubmit={handleSubmit}>
         <Stack spacing={3}>
           <TextField
@@ -90,10 +133,11 @@ export default function LoginForm() {
           </Link>
         </Stack>
 
-        <LoadingButton fullWidth size='large' type='submit' variant='contained' loading={isSubmitting}>
+        <LoadingButton fullWidth size='large' type='submit' variant='contained' loading={loading}>
           Login
         </LoadingButton>
       </Form>
+      {outlet}
     </FormikProvider>
   );
 }
