@@ -19,13 +19,15 @@ import enTranslations from '@shopify/polaris/locales/en.json';
 // ----------------------------------------------------------------------
 
 ReactDOM.render(
-  <AppProvider i18n={enTranslations}>
-    <HelmetProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </HelmetProvider>
-  </AppProvider>,
+  <React.StrictMode>
+    <AppProvider i18n={enTranslations}>
+      <HelmetProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </HelmetProvider>
+    </AppProvider>
+  </React.StrictMode>,
   document.getElementById('root'),
 );
 

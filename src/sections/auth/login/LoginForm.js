@@ -7,6 +7,7 @@ import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormContr
 import { LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../../../components/Iconify';
+import { useAuth } from '../contexts/AuthContext';
 
 // ----------------------------------------------------------------------
 
@@ -14,6 +15,8 @@ export default function LoginForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+
+
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -27,8 +30,11 @@ export default function LoginForm() {
       remember: true,
     },
     validationSchema: LoginSchema,
-    onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+    onSubmit: async () => {
+
+      console.log(values);
+      // await login(values.email, values.password);
+      navigate('/dashboard/app', { replace: true });
     },
   });
 
@@ -38,15 +44,16 @@ export default function LoginForm() {
     setShowPassword((show) => !show);
   };
 
+
   return (
     <FormikProvider value={formik}>
-      <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+      <Form autoComplete='off' noValidate onSubmit={handleSubmit}>
         <Stack spacing={3}>
           <TextField
             fullWidth
-            autoComplete="username"
-            type="email"
-            label="Email address"
+            autoComplete='username'
+            type='email'
+            label='Email address'
             {...getFieldProps('email')}
             error={Boolean(touched.email && errors.email)}
             helperText={touched.email && errors.email}
@@ -54,14 +61,14 @@ export default function LoginForm() {
 
           <TextField
             fullWidth
-            autoComplete="current-password"
+            autoComplete='current-password'
             type={showPassword ? 'text' : 'password'}
-            label="Password"
+            label='Password'
             {...getFieldProps('password')}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={handleShowPassword} edge="end">
+                <InputAdornment position='end'>
+                  <IconButton onClick={handleShowPassword} edge='end'>
                     <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
                   </IconButton>
                 </InputAdornment>
@@ -72,18 +79,18 @@ export default function LoginForm() {
           />
         </Stack>
 
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
+        <Stack direction='row' alignItems='center' justifyContent='space-between' sx={{ my: 2 }}>
           <FormControlLabel
             control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
-            label="Remember me"
+            label='Remember me'
           />
 
-          <Link component={RouterLink} variant="subtitle2" to="#" underline="hover">
+          <Link component={RouterLink} variant='subtitle2' to='#' underline='hover'>
             Forgot password?
           </Link>
         </Stack>
 
-        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+        <LoadingButton fullWidth size='large' type='submit' variant='contained' loading={isSubmitting}>
           Login
         </LoadingButton>
       </Form>
