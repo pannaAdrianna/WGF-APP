@@ -8,6 +8,7 @@ import DashboardSidebar from './DashboardSidebar';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, auth_user, db } from '../../Firebase';
 import { query, collection, getDocs, where } from "firebase/firestore";
+import { useAuth } from '../../sections/auth/contexts/AuthContext';
 
 
 // ----------------------------------------------------------------------
@@ -36,19 +37,21 @@ const MainStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export const DashboardLayout = () => {
+export const DashboardLayout = (props) => {
   const [open, setOpen] = useState(false);
-  const [user, loading, error] = useAuthState(auth);
-  const [name, setName] = useState("");
+  const {user} = useAuth()
+
 
   const outlet = useOutlet();
 
-  if (!auth) {
-    console.log(auth);
+  if (!user) {
     return <Navigate to='/login' />;
   }
+  else{
+    console.log('DashboardLayoutProvider User UID', user.uid)
+  }
 
-  const fetchUserName = async () => {
+/*  const fetchUserName = async () => {
     try {
       const q = query(collection(db, "users"), where("uid", "==", user?.uid));
       const doc = await getDocs(q);
@@ -58,7 +61,7 @@ export const DashboardLayout = () => {
       console.error(err);
       alert("An error occured while fetching user data");
     }
-  };
+  };*/
 
   return (
     <RootStyle>
@@ -67,7 +70,6 @@ export const DashboardLayout = () => {
       <MainStyle>
         {outlet}
       </MainStyle>
-
     </RootStyle>
   );
 };

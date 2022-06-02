@@ -10,7 +10,7 @@ import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Products from './pages/Products';
-import DashboardApp from './pages/DashboardApp';
+import {DashboardApp} from './pages/DashboardApp';
 import Band from './pages/Band/BandProcess';
 import EEGTest from './pages/EEGTest';
 import Visualize from './pages/Visualize';

@@ -8,7 +8,7 @@ import { Alert, LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../../../components/Iconify';
 import { useAuth } from '../contexts/AuthContext';
-import { logInWithEmailAndPassword } from '../../../Firebase';
+import { checkErrorCode } from '../../../Firebase';
 import CloseIcon from '@mui/icons-material/Close';
 
 // ----------------------------------------------------------------------
@@ -17,6 +17,7 @@ export default function LoginForm() {
 
   const outlet = useOutlet();
 
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [errorType, setErrorType] = useState('error');
@@ -39,23 +40,20 @@ export default function LoginForm() {
       setLoading(true);
       setError('');
       console.log('login', formik);
-      logInWithEmailAndPassword(formik.values.email, formik.values.password)
+      login(formik.values.email, formik.values.password)
         .then((res) => {
           // console.log(res.user)
 
-          if (res.user) {
-            setErrorType('success');
-            setError('Successed');
-            setLoading(false);
-            navigate('/dashboard/app')
-          }
-
+          navigate('/dashboard/app', { replace: true });
+        })
+        .catch(err => {
+          let message = checkErrorCode(err.code);
+          setErrorType('error');
+          setError(message);
 
 
         })
-        .catch(err => {
-          setErrorType('error');
-          setError(err.message);
+        .finally(() => {
           setLoading(false);
         });
       setLoading(false);

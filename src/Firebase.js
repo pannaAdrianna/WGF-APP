@@ -31,30 +31,33 @@ export { storage, db };
 export const auth = app.auth();
 export const auth_user = getAuth();
 
-export const logInWithEmailAndPassword = async (email, password) => {
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
+export const  checkErrorCode =(code)=>{
+  switch (code) {
 
-  } catch (err) {
-    console.error(err);
+    case 'auth/wrong-password':
+      return 'Wrong Password';
+
+    case 'auth/email-already-exists':
+      return "Account exists"
+    case 'auth/user-not-found':
+      return "Account doesn't exists"
+
 
   }
-};
+
+}
+
+
+
 
 export const registerWithEmailAndPassword = async (name, last_name, email, password) => {
   try {
     const res = await createUserWithEmailAndPassword(auth_user, email, password);
     const user = res.user;
-    await addDoc(collection(db, 'users'), {
-      uid: user.uid,
-      name,
-      last_name,
-      authProvider: 'local',
-      email,
-    });
+
   } catch (err) {
-    console.error(err);
-    alert(err.message);
+    console.error('tutak', err);
+    return err
   }
 };
 

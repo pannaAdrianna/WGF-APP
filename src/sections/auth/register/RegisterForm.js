@@ -41,19 +41,31 @@ export default function RegisterForm() {
       setLoading(true);
       setError('');
       console.log('Formik Register', formik);
-      registerWithEmailAndPassword( formik.values.firstName, formik.values.lastName, formik.values.email, formik.values.password)
-        .then((res) => {
-          setErrorType('success');
-          setError('Successed');
-          setLoading(false);
+      try {
+        registerWithEmailAndPassword(formik.values.firstName, formik.values.lastName, formik.values.email, formik.values.password).then(r => {
 
-          navigate('/login', {replace: true})
+          if(r) {
+            console.log('response from Firebase', r)
+            setErrorType('error')
+            setError(r.message);
+
+          }
+          else{
+            setErrorType('success')
+            setError('Created an account');
+          }
+
         })
-        .catch(err => {
-          setErrorType('error');
-          setError(err.message);
-          setLoading(false);
-        });
+        {
+
+        }
+      }
+      catch (e) {
+        console.log('Register error', e)
+
+
+      }
+      setLoading(false);
     },
   });
 

@@ -92,6 +92,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@shopify/polaris": "^9.11.0"
+    "@shopify/polaris": "^9.11.0",
+    "react-redux": "^8.0.2"
   }
 }
