@@ -1,20 +1,21 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
-import { useFormik, Form, FormikProvider } from 'formik';
+
 import { useNavigate } from 'react-router-dom';
 // material
-import { Stack, TextField, IconButton, InputAdornment, Box } from '@mui/material';
-import { Alert, LoadingButton } from '@mui/lab';
+import { Stack, TextField, Alert, IconButton, InputAdornment, Box } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../../../components/Iconify';
 import CloseIcon from '@mui/icons-material/Close';
-import { registerWithEmailAndPassword } from '../../../Firebase';
-
-
+import { checkErrorCode, registerWithEmailAndPassword } from '../../../Firebase';
+import { FormContainer, PasswordElement, TextFieldElement } from 'react-hook-form-mui';
+import { useAuth } from '../contexts/AuthContext';
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
   const navigate = useNavigate();
+  const { signup } = useAuth();
 
   const [error, setError] = useState('');
   const [errorType, setErrorType] = useState('');
@@ -22,131 +23,72 @@ export default function RegisterForm() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('First name required'),
-    lastName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Last name required'),
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required'),
-  });
 
-  const formik = useFormik({
-    initialValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-    },
-    validationSchema: RegisterSchema,
-    onSubmit: () => {
-      setLoading(true);
-      setError('');
-      console.log('Formik Register', formik);
-      try {
-        registerWithEmailAndPassword(formik.values.firstName, formik.values.lastName, formik.values.email, formik.values.password).then(r => {
-
-          if(r) {
-            console.log('response from Firebase', r)
-            setErrorType('error')
-            setError(r.message);
-
-          }
-          else{
-            setErrorType('success')
-            setError('Created an account');
-          }
-
-        })
-        {
-
-        }
-      }
-      catch (e) {
-        console.log('Register error', e)
-
-
-      }
-      setLoading(false);
-    },
-  });
-
-
-  const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
   const [open, setOpen] = useState(true);
-  return (
-    <FormikProvider value={formik}>
 
-      {error &&  <Alert
-        severity={errorType}
+  const onSubmit = (data) => {
+
+    console.log('Register');
+    console.log('data', data);
+
+    setLoading(true);
+    setError('');
+    signup(data.email, data.password)
+      .then((res) => {
+
+        console.log(res.user);
+
+        navigate('/login', { replace: true });
+      })
+      .catch(err => {
+        let message = checkErrorCode(err.code);
+        setErrorType('error');
+        setError(message);
+
+
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+    setLoading(false);
+  };
+
+  return (
+
+    <FormContainer
+      onSuccess={onSubmit}
+    >
+
+      {error && <Alert
         action={
           <IconButton
-            aria-label="close"
-            color="inherit"
-            size="small"
+            aria-label='close'
+            color='inherit'
+            size='small'
             onClick={() => {
               setOpen(false);
             }}
           >
-            <CloseIcon fontSize="inherit" />
+            <CloseIcon fontSize='inherit' />
           </IconButton>
         }
+        severity={errorType}
         sx={{ mb: 2 }}
       >
         {error}
       </Alert>}
-      <Form autoComplete='off' noValidate onSubmit={handleSubmit}>
-        <Stack spacing={3}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField
-              fullWidth
-              label='First name'
-              {...getFieldProps('firstName')}
-              error={Boolean(touched.firstName && errors.firstName)}
-              helperText={touched.firstName && errors.firstName}
-            />
 
-            <TextField
-              fullWidth
-              label='Last name'
-              {...getFieldProps('lastName')}
-              error={Boolean(touched.lastName && errors.lastName)}
-              helperText={touched.lastName && errors.lastName}
-            />
-          </Stack>
+      <Stack spacing={3}>
+        <TextFieldElement name='firstName' label='First name' required />
+        <TextFieldElement name='lastName' label='Last name' required />
+        <TextFieldElement name='email' label='Email' required />
+        <PasswordElement name='password' label='Password' required />
+        <LoadingButton fullWidth size='large' type='submit' variant='contained' loading={loading}>
+          Sign Up
+        </LoadingButton>
+      </Stack>
 
-          <TextField
-            fullWidth
-            autoComplete='username'
-            type='email'
-            label='Email address'
-            {...getFieldProps('email')}
-            error={Boolean(touched.email && errors.email)}
-            helperText={touched.email && errors.email}
-          />
 
-          <TextField
-            fullWidth
-            autoComplete='current-password'
-            type={showPassword ? 'text' : 'password'}
-            label='Password'
-            {...getFieldProps('password')}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <IconButton edge='end' onClick={() => setShowPassword((prev) => !prev)}>
-                    <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            error={Boolean(touched.password && errors.password)}
-            helperText={touched.password && errors.password}
-          />
-
-          <LoadingButton fullWidth size='large' type='submit' variant='contained' loading={loading}>
-            Register
-          </LoadingButton>
-        </Stack>
-      </Form>
-    </FormikProvider>
+    </FormContainer>
   );
-}
+};

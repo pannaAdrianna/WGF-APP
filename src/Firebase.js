@@ -36,11 +36,12 @@ export const  checkErrorCode =(code)=>{
 
     case 'auth/wrong-password':
       return 'Wrong Password';
-
     case 'auth/email-already-exists':
       return "Account exists"
     case 'auth/user-not-found':
       return "Account doesn't exists"
+    case'auth/email-already-in-use':
+      return "Email already registered"
 
 
   }
@@ -63,6 +64,6 @@ export const registerWithEmailAndPassword = async (name, last_name, email, passw
 
 
 export const logout = () => {
-  signOut(auth_user);
+  signOut(auth_user).then(r => console.log('Wylogowano'));
 
 };

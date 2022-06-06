@@ -1,16 +1,26 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate, useOutlet } from 'react-router-dom';
-import { useFormik, Form, FormikProvider } from 'formik';
-// material
-import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel, Box } from '@mui/material';
+
+import {
+  Link,
+  Stack,
+  Checkbox,
+  TextField,
+  IconButton,
+  InputAdornment,
+  FormControlLabel,
+  Box,
+  FormControl,
+} from '@mui/material';
 import { Alert, LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../../../components/Iconify';
 import { useAuth } from '../contexts/AuthContext';
 import { checkErrorCode } from '../../../Firebase';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { useForm } from 'react-hook-form';
+import { FormContainer, TextFieldElement, PasswordElement } from 'react-hook-form-mui';
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
@@ -29,39 +39,31 @@ export default function LoginForm() {
     password: Yup.string().required('Password is required'),
   });
 
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-      remember: true,
-    },
-    validationSchema: LoginSchema,
-    onSubmit: () => {
-      setLoading(true);
-      setError('');
-      console.log('login', formik);
-      login(formik.values.email, formik.values.password)
-        .then((res) => {
-          // console.log(res.user)
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+  const onSubmit = (data) => {
+    setLoading(true);
+    setError('');
+    console.log('login', data);
+    login(data.email, data.password)
+      .then((res) => {
 
-          navigate('/dashboard/app', { replace: true });
-        })
-        .catch(err => {
-          let message = checkErrorCode(err.code);
-          setErrorType('error');
-          setError(message);
+        // console.log(res.user)
+
+        navigate('/dashboard/app', { replace: true });
+      })
+      .catch(err => {
+        let message = checkErrorCode(err.code);
+        setErrorType('error');
+        setError(message);
 
 
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-      setLoading(false);
-    },
-  });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+    setLoading(false);
+  };
 
-
-  const { errors, touched, values, handleSubmit, getFieldProps } = formik;
 
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
@@ -69,7 +71,78 @@ export default function LoginForm() {
 
 
   return (
-    <FormikProvider value={formik}>
+    /* <FormikProvider value={formik}>
+       {error && <Alert
+         action={
+           <IconButton
+             aria-label='close'
+             color='inherit'
+             size='small'
+             onClick={() => {
+               setOpen(false);
+             }}
+           >
+             <CloseIcon fontSize='inherit' />
+           </IconButton>
+         }
+         severity={errorType}
+         sx={{ mb: 2 }}
+       >
+         {error}
+       </Alert>}
+       <Form autoComplete='off' noValidate onSubmit={handleSubmit}>
+         <Stack spacing={3}>
+           <TextField
+             fullWidth
+             autoComplete='username'
+             type='email'
+             label='Email address'
+             {...getFieldProps('email')}
+             error={Boolean(touched.email && errors.email)}
+             helperText={touched.email && errors.email}
+           />
+
+           <TextField
+             fullWidth
+             autoComplete='current-password'
+             type={showPassword ? 'text' : 'password'}
+             label='Password'
+             {...getFieldProps('password')}
+             InputProps={{
+               endAdornment: (
+                 <InputAdornment position='end'>
+                   <IconButton onClick={handleShowPassword} edge='end'>
+                     <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                   </IconButton>
+                 </InputAdornment>
+               ),
+             }}
+             error={Boolean(touched.password && errors.password)}
+             helperText={touched.password && errors.password}
+           />
+         </Stack>
+
+         <Stack direction='row' alignItems='center' justifyContent='space-between' sx={{ my: 2 }}>
+           <FormControlLabel
+             control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
+             label='Remember me'
+           />
+
+           <Link component={RouterLink} variant='subtitle2' to='#' underline='hover'>
+             Forgot password?
+           </Link>
+         </Stack>
+
+         <LoadingButton fullWidth size='large' type='submit' variant='contained' loading={loading}>
+           Login
+         </LoadingButton>
+       </Form>
+       {outlet}
+     </FormikProvider>*/
+    <FormContainer
+      onSuccess={onSubmit}
+    >
+      {/*<form onSubmit={handleSubmit(onSubmit)}>*/}
       {error && <Alert
         action={
           <IconButton
@@ -88,54 +161,16 @@ export default function LoginForm() {
       >
         {error}
       </Alert>}
-      <Form autoComplete='off' noValidate onSubmit={handleSubmit}>
-        <Stack spacing={3}>
-          <TextField
-            fullWidth
-            autoComplete='username'
-            type='email'
-            label='Email address'
-            {...getFieldProps('email')}
-            error={Boolean(touched.email && errors.email)}
-            helperText={touched.email && errors.email}
-          />
 
-          <TextField
-            fullWidth
-            autoComplete='current-password'
-            type={showPassword ? 'text' : 'password'}
-            label='Password'
-            {...getFieldProps('password')}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <IconButton onClick={handleShowPassword} edge='end'>
-                    <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            error={Boolean(touched.password && errors.password)}
-            helperText={touched.password && errors.password}
-          />
-        </Stack>
-
-        <Stack direction='row' alignItems='center' justifyContent='space-between' sx={{ my: 2 }}>
-          <FormControlLabel
-            control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
-            label='Remember me'
-          />
-
-          <Link component={RouterLink} variant='subtitle2' to='#' underline='hover'>
-            Forgot password?
-          </Link>
-        </Stack>
-
+      <Stack spacing={3}>
+        <TextFieldElement name='email' label='Email' required />
+        <PasswordElement name='password' label='Password' required />
         <LoadingButton fullWidth size='large' type='submit' variant='contained' loading={loading}>
           Login
         </LoadingButton>
-      </Form>
-      {outlet}
-    </FormikProvider>
+      </Stack>
+
+
+    </FormContainer>
   );
 }
