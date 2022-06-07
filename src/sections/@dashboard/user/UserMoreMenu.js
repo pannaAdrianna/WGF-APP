@@ -11,6 +11,9 @@ export default function UserMoreMenu() {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
+
+
+
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
@@ -27,14 +30,17 @@ export default function UserMoreMenu() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem sx={{ color: 'text.secondary' }}>
+        <MenuItem sx={{ color: 'text.secondary' }} onClick={(event) => {
+          console.log('on menu edelete', event);
+
+        }}>
           <ListItemIcon>
             <Iconify icon="eva:trash-2-outline" width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
-        <MenuItem component={RouterLink} to="#" sx={{ color: 'text.secondary' }}>
+        <MenuItem component={RouterLink} to="#" sx={{ color: 'text.secondary' }} onClick={(event) => {console.log('on menu edit', event)}}>
           <ListItemIcon>
             <Iconify icon="eva:edit-fill" width={24} height={24} />
           </ListItemIcon>

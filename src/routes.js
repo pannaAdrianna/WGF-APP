@@ -5,7 +5,7 @@ import { DashboardLayout } from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 
-import User from './pages/User';
+import Patient from './pages/Patient';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
@@ -17,6 +17,7 @@ import Visualize from './pages/Visualize';
 import { PageSwitcher } from './pages/Band/PageSwitcher/PageSwitcher';
 import { AppProvider } from '@shopify/polaris';
 import enTranslations from '@shopify/polaris/locales/en.json';
+import PatientForm from './sections/@dashboard/patient/PatientForm';
 
 
 // ----------------------------------------------------------------------
@@ -29,9 +30,10 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
+        { path: 'user', element: <Patient /> },
         { path: 'band', element: <Band /> },
         { path: 'eegtest', element: <EEGTest /> },
+        { path: 'add-patient', element: <PatientForm /> },
         {
           path: 'test',
           children: [
@@ -44,7 +46,6 @@ export default function Router() {
       element: <LogoOnlyLayout />,
       children: [
         { path: '/', element: <Navigate to='/login' /> },
-        // { path: '/', element: <Navigate to='/login' /> },
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
         { path: '404', element: <NotFound /> },
