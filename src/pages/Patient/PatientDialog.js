@@ -1,67 +1,78 @@
-
-import PatientCard from "./PatientCard";
-import {useEffect, useState} from "react";
-import PropTypes from "prop-types";
-import {Dialog, DialogContent, IconButton, Button, Card} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import PatientCard from './PatientCard';
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Dialog, DialogContent, IconButton, Button, Card, DialogTitle } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
+import { db } from '../../Firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 const PatientDialog = (props) => {
-    const {onClose, open, selectedPatient} = props;
-    const navigate = useNavigate();
+  const { onClose, open, pesel } = props;
+  const navigate = useNavigate();
+  const [selectedPatient, setSelectedPatient] = useState([]);
 
-    useEffect(() => {
-        console.log('PAtientDialog', selectedPatient[0])
-        console.log('PAtientDialog.name', selectedPatient.name)
-        // let pat = new Patient(select)
+  const docRef = doc(db, 'patients', pesel);
 
 
-        // eslint-disable-next-line
-    }, []);
+  async function getPatient() {
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      console.log('Document data:', docSnap.data());
+
+      // setSelectedPatient({ name: docSnap.da} })
+    } else {
+      // doc.data() will be undefined in this case
+      console.log('No such document!');
+    }
+  };
+
+  useEffect(() => {
+    console.log('Patients Dialog props');
+    console.log(props);
+    getPatient().then(r => {
+      console.log('r', r);
+    });
+    // let pat = new Patient(select)
 
 
-
-    const handleClose = () => {
-        onClose();
-    };
+    // eslint-disable-next-line
+  }, []);
 
 
-    let year = new Date().getFullYear()
-    let datePattern = "dd.MM.yyyy"
-    return (
-        <Dialog onClose={handleClose} open={open}>
-            <IconButton style={{color: 'grey', background: 'white'}} onClick={handleClose}>
-                <CloseIcon/>
-            </IconButton>
-            <DialogContent style={{padding: 10, alignItems: 'center', gap: 10}}>
-                {/*<DialogTitle>Patient Info</DialogTitle>*/}
+  let year = new Date().getFullYear();
+  let datePattern = 'dd.MM.yyyy';
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <IconButton style={{ color: 'grey', background: 'white' }} onClick={onClose}>
+        <CloseIcon />
+      </IconButton>
+      <DialogContent style={{ padding: 10, alignItems: 'center', gap: 10 }}>
+        <DialogTitle>Patient Info {pesel}</DialogTitle>
+        {}
+        <PatientCard patient={selectedPatient} />
 
-                <PatientCard myPatient={selectedPatient}/>
-                <Button
-                        onClick={() => navigate('/eeg-test', {patient: selectedPatient})}>Add New
-                    Test</Button>
+        {/*<Button*/}
+        {/*        onClick={() => navigate('/eeg-test', {patient: selectedPatient})}>Add New*/}
+        {/*    Test</Button>*/}
 
-                <Card>
-                    <h1>Patient's Tests</h1>
-                    {/*<PatientTestTable pesel={selectedPatient.pesel}/>*/}
-                </Card>
-                < >
-                    {/*<Button className={classes.button} style={{background: 'darkgreen'}}>Save</Button>*/}
-                    <Button
-                            onClick={handleClose}>Close</Button>
-                </>
-            </DialogContent>
-        </Dialog>
-    );
-}
+        {/*<Card>*/}
+        {/*    <h1>Patient's Tests</h1>*/}
+        {/*    /!*<PatientTestTable pesel={selectedPatient.pesel}/>*!/*/}
+        {/*</Card>*/}
+        {/*< >*/}
+        {/*    /!*<Button className={classes.button} style={{background: 'darkgreen'}}>Save</Button>*!/*/}
+
+        {/*</>*/}
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 PatientDialog.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    open: PropTypes.bool.isRequired,
-    selectedPatient: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        surname: PropTypes.string.isRequired,
-        pesel: PropTypes.string.isRequired
-    })
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  pesel: PropTypes.string.isRequired,
 };
 export default PatientDialog;

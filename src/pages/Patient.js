@@ -26,7 +26,17 @@ import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 import { db } from '../Firebase';
-import { getFirestore, collection, query, doc, where, getDocs,updateDoc, deleteField , setDoc} from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  query,
+  doc,
+  where,
+  getDocs,
+  updateDoc,
+  deleteField,
+  setDoc,
+} from 'firebase/firestore';
 import PatientDialog from './Patient/PatientDialog';
 import { useAuth } from '../sections/auth/contexts/AuthContext';
 
@@ -67,14 +77,15 @@ function applySortFilter(array, comparator, query) {
 
 export default function Patient() {
 
-  const {user} = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
 
-  const q = query(collection(db, 'patients'), where("owner", "==", user.uid))
+
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const q = query(collection(db, 'patients'), where('owner', '==', user.uid));
   const fetchPatients = async () => {
     const querySnapshot = await getDocs(q);
     const items = [];
@@ -170,12 +181,12 @@ export default function Patient() {
     setOpen(false);
     // setSelectedValue(value);
   };
+
   function showInfo(row) {
     console.log('Pateints Table on INFO button click');
-    setSelectedPatient({name: row.name, pesel: row.pesel});
+    setSelectedPatient(row);
     handleClickOpen();
   }
-
 
 
   return (
@@ -220,7 +231,13 @@ export default function Patient() {
                         role='checkbox'
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
+                        onClick={(event) => showInfo(event, name)}
                       >
+                        <PatientDialog
+                          onClose={handleClose}
+                          open={open}
+                          pesel={row.pesel}
+                        />
                         <TableCell padding='checkbox'>
                           <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
                         </TableCell>
@@ -234,6 +251,11 @@ export default function Patient() {
                         </TableCell>
                         <TableCell align='left'>{name}</TableCell>
                         <TableCell align='left'>{surname}</TableCell>
+
+                          {/*<Button style={{ background: 'red' }}*/}
+                          {/*        onClick={() => deletePatient(row)}>Delete</Button>*/}
+                          {/*    dodać potwierdzenie przy usuwaniu*/}
+
 
                         {/*<TableCell align='left'>{isVerified ? 'Yes' : 'No'}</TableCell>*/}
                         {/*<TableCell align='left'>*/}
