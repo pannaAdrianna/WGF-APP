@@ -231,12 +231,12 @@ export default function Patient() {
                         role='checkbox'
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
-                        onClick={(event) => showInfo(event, name)}
+                        onClick={(event) => showInfo(row)}
                       >
                         <PatientDialog
                           onClose={handleClose}
                           open={open}
-                          pesel={row.pesel}
+                          pesel={selectedPatient.pesel}
                         />
                         <TableCell padding='checkbox'>
                           <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
