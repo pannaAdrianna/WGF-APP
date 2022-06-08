@@ -38,9 +38,7 @@ const PatientDialog = (props) => {
   useEffect(() => {
     console.log('Patients Dialog props');
     console.log(props);
-    getPatient().then(r => {
-      console.log('r', r);
-    });
+    getPatient()
     // let pat = new Patient(select)
 
 
@@ -50,10 +48,12 @@ const PatientDialog = (props) => {
 
   let year = new Date().getFullYear();
   let datePattern = 'dd.MM.yyyy';
+
+  getPatient()
   return (
     <Dialog open={open} onClose={onClose}>
       <IconButton style={{ color: 'grey', background: 'white' }} onClick={onClose}>
-        <CloseIcon />
+        <CloseIcon onClick={onClose} />
       </IconButton>
       <DialogContent style={{ padding: 10, alignItems: 'center', gap: 10 }} >
         <DialogTitle>Patient Info {pesel}</DialogTitle>

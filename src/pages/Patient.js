@@ -44,6 +44,7 @@ const TABLE_HEAD = [
   { id: 'pesel', label: 'Pesel', alignRight: false },
   { id: 'firstName', label: 'First Name', alignRight: false },
   { id: 'lastName', label: 'Last Name', alignRight: false },
+  { id: '' },
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -79,7 +80,6 @@ export default function Patient() {
 
   const { user } = useAuth();
   const navigate = useNavigate();
-
 
 
   const [patients, setPatients] = useState([]);
@@ -136,6 +136,7 @@ export default function Patient() {
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
+    console.log('selected Index', selectedIndex);
     let newSelected = [];
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, name);
@@ -170,7 +171,6 @@ export default function Patient() {
 
 
   const [open, setOpen] = useState(false);
-
   const [selectedPatient, setSelectedPatient] = useState({});
 
   const handleClickOpen = () => {
@@ -182,11 +182,14 @@ export default function Patient() {
     // setSelectedValue(value);
   };
 
-  function showInfo(row) {
+  const showInfo = (pesel) => {
+    console.log('pesel', pesel);
+
     console.log('Pateints Table on INFO button click');
-    setSelectedPatient(row);
+    setSelectedPatient({ pesel: pesel });
     handleClickOpen();
-  }
+
+  };
 
 
   return (
@@ -222,23 +225,20 @@ export default function Patient() {
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                     const { id, name, surname, pesel, birthDay, createdAt, owner, ownerEmail, tests } = row;
                     const isItemSelected = selected.indexOf(name) !== -1;
+                    const isItemClicked = selected.indexOf(pesel) !== -1;
 
                     return (
                       <TableRow
                         hover
-                        key={id}
+                        key={pesel}
                         tabIndex={-1}
                         role='checkbox'
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
-                        onClick={(event) => showInfo(row)}
+                        onClick={() => showInfo(pesel)}
                       >
-                        <PatientDialog
-                          onClose={handleClose}
-                          open={open}
-                          pesel={selectedPatient.pesel}
-                        />
                         <TableCell padding='checkbox'>
+
                           <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
                         </TableCell>
                         <TableCell component='th' scope='row' padding='none'>
@@ -252,9 +252,24 @@ export default function Patient() {
                         <TableCell align='left'>{name}</TableCell>
                         <TableCell align='left'>{surname}</TableCell>
 
-                          {/*<Button style={{ background: 'red' }}*/}
-                          {/*        onClick={() => deletePatient(row)}>Delete</Button>*/}
-                          {/*    dodać potwierdzenie przy usuwaniu*/}
+                        {selectedPatient.pesel ?
+                          <PatientDialog
+                            onClose={handleClose}
+                            open={open}
+                            pesel={selectedPatient.pesel}
+                          />
+                          : null}
+                        {/*   <TableCell align='left'> <Button style={{ background: 'lightgreen' }}
+                                                         onClick={() => showInfo(row)}>Info</Button>
+                          <PatientDialog
+                            onClose={handleClose}
+                            open={open}
+                            pesel={pesel}
+                          /></TableCell>
+
+                        {/*<Button style={{ background: 'red' }}*/}
+                        {/*        onClick={() => deletePatient(row)}>Delete</Button>*/}
+                        {/*    dodać potwierdzenie przy usuwaniu*/}
 
 
                         {/*<TableCell align='left'>{isVerified ? 'Yes' : 'No'}</TableCell>*/}
