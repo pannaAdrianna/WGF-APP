@@ -13,6 +13,7 @@ import { Alert } from '@mui/lab';
 import { Box } from '@material-ui/core';
 import { ref, uploadBytes, uploadBytesResumable, getStorage } from 'firebase/storage';
 import { styled } from '@mui/material/styles';
+import { fDate, fDateTimeSuffix } from '../../../../utils/formatTime';
 
 export default function AddFile() {
   const { user } = useAuth();
@@ -98,14 +99,20 @@ export default function AddFile() {
 
   const handleUpload = () => {
     const storage = getStorage();
-    const storageRef = ref(storage, `${pesel}`);
+    let date=fDateTimeSuffix(file.lastModifiedDate);
+
+    let fileName=`${pesel}_${date}.edf`;
+    const storageRef = ref(storage, `${pesel}/${fileName}`);
 
 
-    const metadata = {
+
+    const customMetadata = {
       contentType: 'data/edf',
+      name: `${fileName}`,
+      type: 'edf'
     };
 
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    const uploadTask = uploadBytesResumable(storageRef, file,{customMetadata});
 
 
     console.log('PLIK: ', file);
