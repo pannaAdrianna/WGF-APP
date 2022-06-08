@@ -37,7 +37,7 @@ import {
   deleteField,
   setDoc,
 } from 'firebase/firestore';
-import PatientDialog from './Patient/PatientDialog';
+import PatientDialog from '../sections/@dashboard/patient/PatientDialog';
 import { useAuth } from '../sections/auth/contexts/AuthContext';
 
 const TABLE_HEAD = [

@@ -11,6 +11,7 @@ import {
   where,
   addDoc,
 } from 'firebase/firestore';
+import { getStorage,ref } from 'firebase/storage';
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -26,29 +27,28 @@ const app = firebase.initializeApp({
 });
 export default app;
 const db = getFirestore(app);
-const storage = app.storage();
-export { storage, db };
+const storage = getStorage(app);
+
+export { storage, db};
 export const auth = app.auth();
 export const auth_user = getAuth();
 
-export const  checkErrorCode =(code)=>{
+export const checkErrorCode = (code) => {
   switch (code) {
 
     case 'auth/wrong-password':
       return 'Wrong Password';
     case 'auth/email-already-exists':
-      return "Account exists"
+      return 'Account exists';
     case 'auth/user-not-found':
-      return "Account doesn't exists"
+      return 'Account doesn\'t exists';
     case'auth/email-already-in-use':
-      return "Email already registered"
+      return 'Email already registered';
 
 
   }
 
-}
-
-
+};
 
 
 export const registerWithEmailAndPassword = async (name, last_name, email, password) => {
@@ -58,7 +58,7 @@ export const registerWithEmailAndPassword = async (name, last_name, email, passw
 
   } catch (err) {
     console.error('tutak', err);
-    return err
+    return err;
   }
 };
 

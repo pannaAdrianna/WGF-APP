@@ -1,20 +1,14 @@
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Card, Container, Grid, Stack, Typography } from '@mui/material';
-import PropTypes from 'prop-types';
-import { alpha, styled } from '@mui/material/styles';
 import Page from '../components/Page';
-
-
-import Iconify from '../components/Iconify';
-
-import { fShortenNumber } from '../utils/formatNumber';
-import { AppWidgetSummary } from '../sections/@dashboard/app';
 import AppCardButton from '../sections/@dashboard/app/AppCardButton';
 
 
-export default function EEGTest() {
+export const EEGTest = (props) => {
 
+  const {state} = useLocation();
   const navigate = useNavigate();
+
 
 
   return (
@@ -22,19 +16,19 @@ export default function EEGTest() {
       <Container>
         <Stack direction='row' alignItems='center' justifyContent='space-between' mb={5}>
           <Typography variant='h4' gutterBottom>
-            Add EEG data
+            Add EEG data {state.pesel}
           </Typography>
         </Stack>
         <Grid container spacing={2}>
           <Grid item xs={3} sm={6} md={3}>
             <AppCardButton title='Upload file' color='info' onClick={() => {
-              navigate('/dashboard/fileUpload');
+              navigate('/dashboard/test/add-file', { state: { pesel: state.pesel } });
             }} icon={'ant-design:file-add-filled'} />
           </Grid>
 
           <Grid item xs={3} sm={6} md={3}>
             <AppCardButton title='Muse Handband' onClick={() => {
-              navigate('/dashboard/band');
+              navigate('/dashboard/test/band', { state: { pesel: state.pesel } });
             }} color='info'
                            icon={'ant-design:play-square-outlined'} />
           </Grid>
@@ -47,4 +41,4 @@ export default function EEGTest() {
   )
     ;
 
-}
+};

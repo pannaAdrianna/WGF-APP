@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import { Dialog, DialogContent, IconButton, Button, Card, DialogTitle } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../../Firebase';
+import { db } from '../../../Firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
 const PatientDialog = (props) => {
   const { onClose, open, pesel } = props;
   const navigate = useNavigate();
-  const [selectedPatient, setSelectedPatient] = useState([]);
+  const [selectedPatient, setSelectedPatient] = useState({});
 
   const docRef = doc(db, 'patients', pesel);
 
@@ -20,8 +20,15 @@ const PatientDialog = (props) => {
 
     if (docSnap.exists()) {
       console.log('Document data:', docSnap.data());
+      setSelectedPatient({
+        pesel: docSnap.data().pesel,
+        name: docSnap.data().name,
+        surname: docSnap.data().surname,
+        birthDay: docSnap.data().birthDay,
+        tests: docSnap.data().tests,
+      });
 
-      // setSelectedPatient({ name: docSnap.da} })
+
     } else {
       // doc.data() will be undefined in this case
       console.log('No such document!');
@@ -50,7 +57,10 @@ const PatientDialog = (props) => {
       </IconButton>
       <DialogContent style={{ padding: 10, alignItems: 'center', gap: 10 }}>
         <DialogTitle>Patient Info {pesel}</DialogTitle>
-        {}
+        <Button
+          onClick={() => {
+            navigate('/dashboard/test/add-test', { state: { pesel: pesel } });
+          }}>Add New Test</Button>
         <PatientCard patient={selectedPatient} />
 
         {/*<Button*/}

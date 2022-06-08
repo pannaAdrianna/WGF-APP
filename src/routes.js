@@ -12,11 +12,9 @@ import Register from './pages/Register';
 import Products from './pages/Products';
 import {DashboardApp} from './pages/DashboardApp';
 import Band from './pages/Band/BandProcess';
-import EEGTest from './pages/EEGTest';
-import Visualize from './pages/Visualize';
-import { PageSwitcher } from './pages/Band/PageSwitcher/PageSwitcher';
-import { AppProvider } from '@shopify/polaris';
-import enTranslations from '@shopify/polaris/locales/en.json';
+import { EEGTest } from './pages/EEGTest';
+import AddFile from './sections/@dashboard/patient/test/AddFile';
+
 import PatientForm from './sections/@dashboard/patient/PatientForm';
 
 
@@ -31,13 +29,15 @@ export default function Router() {
       children: [
         { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <Patient /> },
-        { path: 'band', element: <Band /> },
-        { path: 'eegtest', element: <EEGTest /> },
+
+
         { path: 'add-patient', element: <PatientForm /> },
         {
           path: 'test',
           children: [
-            { path: 'visualize', element: <Visualize /> },
+            { path: 'add-test', element: <EEGTest /> },
+            { path: 'add-file', element: <AddFile /> },
+            { path: 'band', element: <Band /> },
           ],
         }],
     },

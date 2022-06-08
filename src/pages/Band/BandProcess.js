@@ -1,4 +1,4 @@
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import React, { useState, useCallback } from 'react';
 import { MuseClient } from 'muse-js';
 import { Button, Checkbox, Container, Grid, Stack, Typography } from '@mui/material';
@@ -32,6 +32,10 @@ import { saveAs } from 'file-saver';
 const raw = translations.types.raw;
 export default function Band() {
 
+  const {state} = useLocation();
+  const navigate = useNavigate();
+
+
   const [mytimer, setMyTimer] = useState(10);
 
   const steps = [
@@ -55,7 +59,7 @@ export default function Band() {
 
 
   const [activeStep, setActiveStep] = React.useState(0);
-  const navigate = useNavigate();
+
 
 
   const [chartVisibility, setChartVisibility] = useState(false);
@@ -260,7 +264,7 @@ export default function Band() {
       <Container>
 
         <Typography variant='h4' gutterBottom>
-          Process odczytu z opaski
+          Reading from EEG Band for {state.pesel}
         </Typography>
         <Stepper activeStep={activeStep} orientation='vertical'>
           {steps.map((step, index) => (
