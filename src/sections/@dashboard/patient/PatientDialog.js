@@ -55,12 +55,9 @@ const PatientDialog = (props) => {
       <IconButton style={{ color: 'grey', background: 'white' }} onClick={onClose}>
         <CloseIcon />
       </IconButton>
-      <DialogContent style={{ padding: 10, alignItems: 'center', gap: 10 }}>
+      <DialogContent style={{ padding: 10, alignItems: 'center', gap: 10 }} >
         <DialogTitle>Patient Info {pesel}</DialogTitle>
-        <Button
-          onClick={() => {
-            navigate('/dashboard/test/add-test', { state: { pesel: pesel } });
-          }}>Add New Test</Button>
+
         <PatientCard patient={selectedPatient} />
 
         {/*<Button*/}

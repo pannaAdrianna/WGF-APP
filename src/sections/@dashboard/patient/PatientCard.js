@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
-import { Box, Card, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, Stack, Typography } from '@mui/material';
 import { useAuth } from '../../auth/contexts/AuthContext';
 import PropTypes from 'prop-types';
 import PatientTestTable from './PatientTestTable';
+import { useNavigate } from 'react-router-dom';
 
 
 const PatientCard = (props) => {
   const { user } = useAuth();
   const { patient } = props;
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -19,8 +21,8 @@ const PatientCard = (props) => {
 
   return (
 
-    <Card>
-      <Stack direction='row'>
+    <Card sx={{ padding: 2, gap: 10 }}>
+      <Stack direction='column' sx={{ padding: 1 }}>
         <Typography component='span' variant='h4'>
           Patient Card
         </Typography>
@@ -31,8 +33,20 @@ const PatientCard = (props) => {
           Surame: {patient.surname}
         </Typography>
       </Stack>
-      <Card>
-        <PatientTestTable pesel={patient.pesel} />
+      <Card sx={{ padding: 2 }}>
+        <Stack direction='column'>
+
+          <Typography component='span' variant='h5'>
+            Tests
+          </Typography>
+          <Button
+            variant='contained'
+            size='small'
+            onClick={() => {
+              navigate('/dashboard/test/add-test', { state: { pesel: patient.pesel } });
+            }}>Add New Test</Button>
+          <PatientTestTable pesel={patient.pesel} />
+        </Stack>
       </Card>
 
 
