@@ -1,5 +1,5 @@
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { MuseClient } from 'muse-js';
 import { Button, Checkbox, Container, Grid, Stack, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
@@ -27,16 +27,24 @@ import { take, takeUntil } from 'rxjs/operators';
 import { generateXTics } from './PageSwitcher/utils/chartUtils';
 import { timer } from 'rxjs';
 import { saveAs } from 'file-saver';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { fDateTimeSuffix, formatDate } from '../../utils/formatTime';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { v4 as uuidv4 } from 'uuid';
+import { db } from '../../Firebase';
+import { useAuth } from '../../sections/auth/contexts/AuthContext';
+import { Alert } from '@mui/lab';
+import { TextField } from '@material-ui/core';
 
 
 const raw = translations.types.raw;
 export default function Band() {
-
-  const {state} = useLocation();
+  const { user } = useAuth();
+  const { state } = useLocation();
   const navigate = useNavigate();
 
 
-  const [mytimer, setMyTimer] = useState(10);
+  const [mytimer, setMyTimer] = useState(5);
 
   const steps = [
     {
@@ -51,7 +59,7 @@ export default function Band() {
 
     },
     {
-      label: 'Set up timer',
+      label: `Set up timer: ${mytimer}`,
       description: `Czas badania licznik:` + { mytimer },
 
     },
@@ -59,7 +67,6 @@ export default function Band() {
 
 
   const [activeStep, setActiveStep] = React.useState(0);
-
 
 
   const [chartVisibility, setChartVisibility] = useState(false);
@@ -76,15 +83,6 @@ export default function Band() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
-  const startConnection = () => {
-    console.log('Connection start');
-
-  };
-
 
   // For auxEnable settings
   const [checked, setChecked] = useState(true);
@@ -97,8 +95,6 @@ export default function Band() {
   }
   let showAux = true; // if it is even available to press (to prevent in some modules)
 
-  // data pulled out of multicast$
-  const [introData, setIntroData] = useState(emptyAuxChannelData);
 
   const [rawData, setRawData] = useState(emptyAuxChannelData);
 
@@ -109,9 +105,6 @@ export default function Band() {
   // connection status
   const [status, setStatus] = useState(connectionTranslations.connect);
 
-  // for picking a new module
-  const [selected, setSelected] = useState(raw);
-
 
   // for popup flag when recording
   const [recordPop, setRecordPop] = useState(false);
@@ -119,8 +112,15 @@ export default function Band() {
 
   // for popup flag when recording 2nd condition
   const [recordTwoPop, setRecordTwoPop] = useState(false);
-  const recordTwoPopChange = useCallback(() => setRecordTwoPop(!recordTwoPop), [recordTwoPop]);
   showAux = true;
+
+  const [statusPliku, setStatusPliku] = useState();
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+
+
+    // eslint-disable-next-line
+  }, []);
 
 
   async function connect() {
@@ -179,10 +179,88 @@ export default function Band() {
   }
 
 
+  // ADD FUNCTION
+  function addTest(myurl) {
+
+
+    const owner = user ? user.uid : 'unknown';
+    const ownerEmail = user ? user.email : 'unknown';
+
+    const newTest = {
+      id: uuidv4(),
+      url: myurl,
+      owner,
+      ownerEmail,
+      createdAt: serverTimestamp(),
+    };
+
+    const updateData = { tests: newTest };
+    const lastUpdate = { lastUpdate: serverTimestamp() };
+
+    addDoc(collection(db, `tests/${state.pesel}/tests`), updateData).then
+    ((r) => {
+        console.log('response', r);
+      },
+    ).catch((e) => {
+      console.log(e);
+    });
+
+
+    setChartVisibility(false);
+    setStatusPliku(`Data saved to storage for ${state.pesel}`);
+
+
+  }
+
+  function handleTimerChange (event){
+    setMyTimer(event.target.value);
+  };
+
+
   function startRecording() {
+    function uploadToStorage(file) {
+      const storage = getStorage();
+      let date = fDateTimeSuffix(Date.now());
+      let name = `${state.pesel}_${date}.csv`;
+      const storageRef = ref(storage, `tests/${state.pesel}/${name}`);
+      const customMetadata = {
+        contentType: 'data/csv',
+        name: name,
+        date: date,
+      };
+
+      const uploadTask = uploadBytesResumable(storageRef, file, { metadata: customMetadata });
+      setStatusPliku('Gotowe');
+
+      console.log('PLIK: ', file);
+      uploadTask.on(
+        'state_changed',
+        snapshot => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+          );
+          setProgress(progress);
+        },
+        error => {
+          console.log(error);
+        }, () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            console.log('File available at', downloadURL);
+            addTest(downloadURL);
+          });
+        },
+      );
+
+      if (progress === 100) navigate('/dashboard/user');
+
+    }
 
 
     function save() {
+
+
       // now with header in place subscribe to each epoch and log it
       localObservable$.subscribe({
         next(x) {
@@ -199,17 +277,17 @@ export default function Band() {
             dataToSave,
             { type: 'text/plain;charset=utf-8' },
           );
-          saveAs(blob, rawSettings.name + '_Recording_' + Date.now() + '.csv');
+          // saveAs(blob, rawSettings.name + '_Recording_' + Date.now() + '.csv');
+          uploadToStorage(blob);
+
           console.log('Completed');
-        }
+        },
       });
     }
 
     console.log('Saving ' + mytimer + ' seconds...');
     var localObservable$ = null;
     const dataToSave = [];
-
-    console.log('making ' + rawSettings.name + ' headers');
 
 
     // for each module subscribe to multicast and make header
@@ -243,15 +321,13 @@ export default function Band() {
       },
     });
 
-    //TODO Dodanie Input timer i zczytywanie z niego
-
-    // Create timer
     const timer$ = timer(mytimer * 1000);
 
     // put selected observable object into local and start taking samples
     localObservable$ = window.multicastRaw$.pipe(
       takeUntil(timer$),
     );
+
 
     save();
 
@@ -284,12 +360,31 @@ export default function Band() {
                   <Paper square elevation={0} sx={{ p: 3 }}>
                     {status !== connectionTranslations.connected ?
                       <Button variant='contained' onClick={() => {
-                        connect();
+                        connect().then(r => {
+                          console.log('connection', r);
+                        });
                       }}>Connect</Button>
                       :
                       <Typography variant='h5'>Connected with Muse</Typography>}
                   </Paper>
 
+                  : null
+                }
+                {activeStep === 2 ?
+                  <Paper square elevation={0} sx={{ p: 3 }}>
+                    <TextField
+                      id='timer'
+                      label='Timer [min]'
+                      type='number'
+                      defaultValue='1'
+                      minValue='1'
+                      onChange={(event)=>handleTimerChange(event)}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+
+                    />
+                  </Paper>
                   : null
                 }
 
@@ -301,7 +396,7 @@ export default function Band() {
                         onClick={handleNext}
                         sx={{ mt: 1, mr: 1 }}
                       >
-                        {index === steps.length - 1 ? 'Finish' : 'Continue'}
+                        Next
                       </Button>
                       : null
                     }
@@ -321,35 +416,41 @@ export default function Band() {
 
         {activeStep === steps.length && (
           <Paper square elevation={0} sx={{ p: 3 }}>
-            <Typography>All steps completed - You can start now </Typography>
             <Button variant='contained' onClick={() => {
               setChartVisibility(true);
               startRecording();
               recordPopChange();
 
-            }}>Start</Button>
+            }}>Start recording</Button>
             {chartVisibility && <Button
               destructive
               onClick={() => {
                 console.log('stop');
+
+                setChartVisibility(false);
                 setRawData(emptyAuxChannelData);
+                setActiveStep(activeStep - 1);
               }}
               primary={status !== connectionTranslations.connect}
               disabled={status === connectionTranslations.connect}
             >
               Stop</Button>}
+            {statusPliku ? <Alert severity='info'>{statusPliku}</Alert> : null}
           </Paper>
         )
         }
+        {chartVisibility ?
 
-        {chartVisibility ? (
+
           <React.Fragment>
             {pipeSettingsDisplay()}
             {renderModules()}
             {renderRecord()}
           </React.Fragment>
-        ) : null
-        }
+          : <React.Fragment>
+            <p></p>
+          </React.Fragment>}
+
 
       </Container>
     </Page>

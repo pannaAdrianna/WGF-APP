@@ -63,21 +63,10 @@ export default function AddFile() {
     };
 
     const updateData = { tests: newTest };
-    /* ref
-       .doc(`${pesel}`).collection(`tests`)
-       .add(updateData, { merge: true })
-       .catch((err) => {
-         console.error(err);
-       });
-     // const lastUpdate = { lastUpdate: serverTimestamp() };
-     ref.doc(`${pesel}`).set(lastUpdate, { merge: true });*/
     const lastUpdate = { lastUpdate: serverTimestamp() };
 
     addDoc(collection(db, `tests/${pesel}/tests`), updateData).then
     ((r) => {
-        // setErrorType('success');
-        // setError(`Patient ${patient.pesel} added`);
-
         console.log('response', r);
       },
     ).catch((e) => {
