@@ -13,7 +13,7 @@ import { Alert } from '@mui/lab';
 import { Box } from '@material-ui/core';
 import { ref, uploadBytes, uploadBytesResumable, getStorage, getDownloadURL } from 'firebase/storage';
 import { styled } from '@mui/material/styles';
-import { fDateTimeSuffix } from '../../../../utils/formatTime';
+import { fDateTimeSuffix, fToNow } from '../../../../utils/formatTime';
 
 export default function AddFile() {
   const { user } = useAuth();
@@ -46,15 +46,6 @@ export default function AddFile() {
   };
 
 
-  function writePatient(patient) {
-    setDoc(doc(db, 'patients', (patient.pesel)), patient, { merge: true }).then
-    ((r) => {
-        setErrorType('success');
-        setError(`Patient ${patient.pesel} added`);
-        console.log('response', r);
-      },
-    );
-  }
 
   // ADD FUNCTION
   function addTest(myurl) {
@@ -146,9 +137,6 @@ export default function AddFile() {
   }
 
 
-  const Input = styled('input')({
-    display: 'none',
-  });
 
   function CircularProgressWithLabel(props) {
     return (

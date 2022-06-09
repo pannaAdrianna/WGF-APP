@@ -48,8 +48,6 @@ const PatientDialog = (props) => {
   }, []);
 
 
-
-
   return (
     <Dialog open={open} onClose={onClose}>
       <IconButton style={{ color: 'grey', background: 'white' }} onClick={onClose}>
@@ -61,19 +59,6 @@ const PatientDialog = (props) => {
           <DialogTitle>Patient Info {patient.pesel}</DialogTitle>
 
           <PatientCard patient={patient} />
-
-          {/*<Button*/}
-          {/*        onClick={() => navigate('/eeg-test', {patient: selectedPatient})}>Add New*/}
-          {/*    Test</Button>*/}
-
-          {/*<Card>*/}
-          {/*    <h1>Patient's Tests</h1>*/}
-          {/*    /!*<PatientTestTable pesel={selectedPatient.pesel}/>*!/*/}
-          {/*</Card>*/}
-          {/*< >*/}
-          {/*    /!*<Button className={classes.button} style={{background: 'darkgreen'}}>Save</Button>*!/*/}
-
-          {/*</>*/}
         </DialogContent>
         : null}
     </Dialog>
@@ -86,7 +71,7 @@ PatientDialog.propTypes = {
   patient: PropTypes.shape({
     name: PropTypes.string.isRequired,
     surname: PropTypes.string.isRequired,
-    pesel: PropTypes.string.isRequired
-  })
+    pesel: PropTypes.string.isRequired,
+  }),
 };
 export default PatientDialog;

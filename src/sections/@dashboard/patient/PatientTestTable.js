@@ -1,4 +1,4 @@
-import { Button, Card } from '@material-ui/core';
+
 import React, { useEffect, useState } from 'react';
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
@@ -15,7 +15,8 @@ import PropTypes from 'prop-types';
 
 import Test from './test/Test';
 import { useAuth } from '../../auth/contexts/AuthContext';
-import { fDateTimeSuffix } from '../../../utils/formatTime';
+import { fDateTimeSuffix, formatDate, fuckDate } from '../../../utils/formatTime';
+import { Button } from '@mui/material';
 
 
 const PatientTestTable = (props) => {
@@ -63,10 +64,23 @@ const PatientTestTable = (props) => {
     const querySnapshot = await getDocs(q);
     const items = [];
     querySnapshot.docs.forEach((doc) => {
-      items.push(doc.data());
+      items.push(doc.data().tests);
     });
-    setRows(items);
+
     setLoading(false);
+    console.log('items', items);
+
+
+    const myItems = [];
+    items.forEach((item) => {
+
+      console.log('Item', item);
+
+      myItems.push(item);
+
+
+    });
+    setRows(myItems);
 
 
     /* querySnaphot.forEach((doc) => {
@@ -113,7 +127,7 @@ const PatientTestTable = (props) => {
             </div> :
 
             <TableContainer>
-              <Table sx={{ minWidth: 650 }} size='xl' aria-label='simple table'
+              <Table size='xl' aria-label='simple table'
                      style={{ background: 'white' }}>
                 <TableHead>
                   <TableRow>
@@ -124,7 +138,7 @@ const PatientTestTable = (props) => {
 
                   </TableRow>
                 </TableHead>
-                <TableBody>
+                <TableBody style={{padding: 10, gap: 5}}>
                   {rows.map((row, i) => (
 
                     <TableRow
@@ -135,11 +149,13 @@ const PatientTestTable = (props) => {
                       <TableCell align='center'>{i + 1}</TableCell>
                       <TableCell
                         // align='center'>{format(row.createdAt.toDate(), datePattern)}</TableCell>
-                        align='center'>data</TableCell>
+                        align='center'>{formatDate(row.createdAt.toDate())}</TableCell>
 
-                      <TableCell component='th' scope='row'>
-                        <Button href={row.url}>Download</Button>
-                        <Button onClick={() => navigate('/visualize-file', { filepath: row.url })}>Visualize</Button>
+
+                      <TableCell align='center' component='th' scope='row'>
+                        <Button variant='contained' href={row.url}>Download</Button>
+                        <Button variant='contained'
+                                onClick={() => navigate('/visualize-file', { state: { filepath: row.url } })}>Visualize</Button>
                       </TableCell>
 
 

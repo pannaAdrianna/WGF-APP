@@ -14,6 +14,10 @@ export function fDateTimeSuffix(date) {
   return format(new Date(date), 'dd.MM.yyyy hh:mm');
 }
 
+export function formatDate(date) {
+  return format(new Date(date), 'dd.MM.yyyy');
+}
+
 export function fToNow(date) {
   return formatDistanceToNow(new Date(date), {
     addSuffix: true,
