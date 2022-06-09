@@ -4,14 +4,14 @@ import { Button, Card, Container, Grid, Stack, Typography, CircularProgress, Inp
 
 import Page from '../../../../components/Page';
 import { v4 as uuidv4 } from 'uuid';
-import { addDoc, doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { addDoc, doc, serverTimestamp, collection, setDoc } from 'firebase/firestore';
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../../auth/contexts/AuthContext';
 import { db } from '../../../../Firebase';
 import { Alert } from '@mui/lab';
 import { Box } from '@material-ui/core';
-import { ref, uploadBytes, uploadBytesResumable, getStorage } from 'firebase/storage';
+import { ref, uploadBytes, uploadBytesResumable, getStorage, getDownloadURL } from 'firebase/storage';
 import { styled } from '@mui/material/styles';
 import { fDateTimeSuffix } from '../../../../utils/formatTime';
 
@@ -78,14 +78,15 @@ export default function AddFile() {
        .catch((err) => {
          console.error(err);
        });
-     const lastUpdate = { lastUpdate: serverTimestamp() };
+     // const lastUpdate = { lastUpdate: serverTimestamp() };
      ref.doc(`${pesel}`).set(lastUpdate, { merge: true });*/
+    const lastUpdate = { lastUpdate: serverTimestamp() };
 
-    // refPatients.doc(`${pesel}`).
-    addDoc(doc(db, `tests/${pesel}/tests`), updateData, { merge: true }).then
+    addDoc(collection(db, `tests/${pesel}/tests`), updateData).then
     ((r) => {
         // setErrorType('success');
         // setError(`Patient ${patient.pesel} added`);
+
         console.log('response', r);
       },
     ).catch((e) => {
@@ -121,24 +122,18 @@ export default function AddFile() {
       },
       error => {
         console.log(error);
-      },
-      async () => {
-
-
-        storage
-          .ref(`patients/${pesel}`)
-          .child(file.name)
-          .getDownloadURL()
-          .then(url => {
-              setUrl(url);
-              addTest(url);
-            },
-          );
-
+      }, () => {
+        // Handle successful uploads on complete
+        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log('File available at', downloadURL);
+          setUrl(downloadURL);
+          addTest(downloadURL);
+        });
       },
     );
 
-    navigate('/dashboard/user')
+    if (progress===100) navigate('/dashboard/user');
 
 
   };

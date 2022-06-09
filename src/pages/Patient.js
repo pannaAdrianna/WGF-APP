@@ -39,6 +39,7 @@ import {
 } from 'firebase/firestore';
 import PatientDialog from '../sections/@dashboard/patient/PatientDialog';
 import { useAuth } from '../sections/auth/contexts/AuthContext';
+import { TableHead } from '@material-ui/core';
 
 const TABLE_HEAD = [
   { id: 'pesel', label: 'Pesel', alignRight: false },
@@ -83,6 +84,7 @@ export default function Patient() {
 
 
   const [patients, setPatients] = useState([]);
+  const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const q = query(collection(db, 'patients'), where('owner', '==', user.uid));
@@ -93,6 +95,7 @@ export default function Patient() {
       items.push(doc.data());
     });
     setPatients(items);
+    setRows(items);
     setLoading(false);
   };
 
@@ -102,7 +105,7 @@ export default function Patient() {
     fetchPatients().then(r => {
       console.log('fetch');
     });
-    // getPatients()
+
     // eslint-disable-next-line
   }, []);
 
@@ -182,13 +185,13 @@ export default function Patient() {
     // setSelectedValue(value);
   };
 
-  const showInfo = (pesel) => {
-    console.log('pesel', pesel);
+  const showInfo = (row) => {
+    console.log('pesel', row.pesel);
+
 
     console.log('Pateints Table on INFO button click');
-    setSelectedPatient({ pesel: pesel });
+    setSelectedPatient({ pesel: row.pesel, name: row.firstName, surname: row.surname });
     handleClickOpen();
-
   };
 
 
@@ -205,116 +208,58 @@ export default function Patient() {
             New Patient
           </Button>
         </Stack>
+        {loading ? <h1>Loading...</h1> :
+          <Card>
+            <Scrollbar>
+              <TableContainer sx={{ minWidth: 800 }}>
+                <Table>
+                  <UserListHead
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={patients.length}
+                    numSelected={selected.length}
 
-        <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
-
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <UserListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={patients.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, surname, pesel, birthDay, createdAt, owner, ownerEmail, tests } = row;
-                    const isItemSelected = selected.indexOf(name) !== -1;
-                    const isItemClicked = selected.indexOf(pesel) !== -1;
-
-                    return (
-                      <TableRow
-                        hover
-                        key={pesel}
-                        tabIndex={-1}
-                        role='checkbox'
-                        selected={isItemSelected}
-                        aria-checked={isItemSelected}
-                        onClick={() => showInfo(pesel)}
-                      >
-                        <TableCell padding='checkbox'>
-
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
-                        </TableCell>
-                        <TableCell component='th' scope='row' padding='none'>
-                          <Stack direction='row' alignItems='center' spacing={2}>
-                            {/*<Avatar alt={name} src={avatarUrl} />*/}
-                            <Typography variant='subtitle2' noWrap>
-                              {pesel}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-                        <TableCell align='left'>{name}</TableCell>
-                        <TableCell align='left'>{surname}</TableCell>
-
-                        {selectedPatient.pesel ?
-                          <PatientDialog
-                            onClose={handleClose}
-                            open={open}
-                            pesel={selectedPatient.pesel}
-                          />
-                          : null}
-                        {/*   <TableCell align='left'> <Button style={{ background: 'lightgreen' }}
-                                                         onClick={() => showInfo(row)}>Info</Button>
-                          <PatientDialog
-                            onClose={handleClose}
-                            open={open}
-                            pesel={pesel}
-                          /></TableCell>
-
-                        {/*<Button style={{ background: 'red' }}*/}
-                        {/*        onClick={() => deletePatient(row)}>Delete</Button>*/}
-                        {/*    dodać potwierdzenie przy usuwaniu*/}
-
-
-                        {/*<TableCell align='left'>{isVerified ? 'Yes' : 'No'}</TableCell>*/}
-                        {/*<TableCell align='left'>*/}
-                        {/*  <Label variant='ghost' color={(status === 'banned' && 'error') || 'success'}>*/}
-                        {/*    {sentenceCase(status)}*/}
-                        {/*  </Label>*/}
-                        {/*</TableCell>*/}
-
-                        <TableCell align='right'>
-                          <UserMoreMenu />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-
-                {isUserNotFound && (
+                  />
                   <TableBody>
-                    <TableRow>
-                      <TableCell align='center' colSpan={6} sx={{ py: 3 }}>
-                        <SearchNotFound searchQuery={filterName} />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                )}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+                    {filteredUsers.map((row) => (
+                      <TableRow
+                        key={row.pesel}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell component='th' scope='row'>
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component='div'
-            count={patients.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Card>
+                        </TableCell>
+                        <TableCell component='th' scope='row'>
+                          {row.pesel}
+                        </TableCell>
+
+                        <TableCell align='center'>{row.name}</TableCell>
+                        <TableCell align='center'>{row.surname}</TableCell>
+                        <TableCell align='center'>
+                          <Button style={{ background: 'lightgreen' }} onClick={() => showInfo(row)}>Info</Button>
+                          {selectedPatient ?
+                            <PatientDialog onClose={handleClose}  open={open}
+                                           patient={selectedPatient} /> : null}
+
+                         {/* <Button style={{ background: 'red' }}
+                                  onClick={() => deletePatient(row)}>Delete</Button>
+                              dodać potwierdzenie przy usuwaniu*/}
+
+                        </TableCell>
+                        <TableCell>Unknown</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Scrollbar>
+
+
+          </Card>
+        }
+
+
       </Container>
     </Page>
   );

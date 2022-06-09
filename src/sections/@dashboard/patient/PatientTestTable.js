@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 
 import Test from './test/Test';
 import { useAuth } from '../../auth/contexts/AuthContext';
+import { fDateTimeSuffix } from '../../../utils/formatTime';
 
 
 const PatientTestTable = (props) => {
@@ -56,37 +57,46 @@ const PatientTestTable = (props) => {
     setLoading(true);
     let productsWithUser = [];
     let myTests = [];
-    const querySnaphot = await getDocs(collection(db, `tests/${pesel}/tests`));
 
-    querySnaphot.forEach((doc) => {
-      let newItem = { id: doc.id, ...doc.data().tests };
-      let temp;
-      if (newItem.tests) {
-        let userData = getDoc(newItem.tests);
-        console.log('tescik: ', new Test(newItem));
-        if (userData) {
-          newItem.tests = { testID: userData.id, ...userData.data() };
-          temp = new Test(newItem.tests.data());
-          // let temp = new Test(userData.id, userData.url)
-          // console.log('temp: ', temp)
-          // myTests.push(temp)
-          productsWithUser.push(newItem);
-        }
-      } else {
-        productsWithUser.push(newItem);
-      }
-      console.log('TEMP :', temp);
+    const q = query(collection(db, `tests/${pesel}/tests`));
 
-
+    const querySnapshot = await getDocs(q);
+    const items = [];
+    querySnapshot.docs.forEach((doc) => {
+      items.push(doc.data());
     });
-    console.log('Patients table len', productsWithUser.length);
-    console.log(`Patients TABLE!!! all`, productsWithUser);
-    setRows(productsWithUser);
-    console.log('ROWS new: ', rows);
-    let num = 0;
-    console.log(`ROWS${num}: `, rows[num]);
-    // console.log(`ROWS${num} createdAt: `, format(rows[num].createdAt.toDate(), datePattern))
-    // console.log(`ROWS${num} createdAt: `, format(productsWithUser[num].createdAt.toDate(), datePattern))
+    setRows(items);
+    setLoading(false);
+
+
+    /* querySnaphot.forEach((doc) => {
+       console.log('IN Query', doc);
+       let newItem = { id: doc.id, ...doc.data().tests };
+       let temp;
+       if (newItem.tests) {
+         let userData = getDoc(newItem.tests);
+         console.log('tescik: ', new Test(newItem));
+         if (userData) {
+           newItem.tests = { testID: userData.id, ...userData.data() };
+           temp = new Test(newItem.tests.data());
+           // let temp = new Test(userData.id, userData.url)
+           // console.log('temp: ', temp)
+           // myTests.push(temp)
+           productsWithUser.push(newItem);
+         }
+       } else {
+         productsWithUser.push(newItem);
+       }
+       console.log('TEMP :', temp);
+
+
+     });*/
+    // console.log('Patients table len', productsWithUser.length);
+    // console.log(`Patients TABLE!!! all`, productsWithUser);
+    // setRows(productsWithUser);
+    // console.log('ROWS new: ', rows);
+    // let num = 0;
+    // console.log(`ROWS${num}: `, rows[num]);
     setLoading(false);
 
 
@@ -125,7 +135,7 @@ const PatientTestTable = (props) => {
                       <TableCell align='center'>{i + 1}</TableCell>
                       <TableCell
                         // align='center'>{format(row.createdAt.toDate(), datePattern)}</TableCell>
-                        align='center'>{(row.createdAt.toDate())}</TableCell>
+                        align='center'>data</TableCell>
 
                       <TableCell component='th' scope='row'>
                         <Button href={row.url}>Download</Button>
