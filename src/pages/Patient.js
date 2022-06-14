@@ -190,7 +190,7 @@ export default function Patient() {
 
 
     console.log('Pateints Table on INFO button click');
-    setSelectedPatient({ pesel: row.pesel, name: row.name, surname: row.surname });
+    setSelectedPatient({ pesel: row.pesel, name: row.name, surname: row.surname, id: row.id});
     handleClickOpen();
   };
 

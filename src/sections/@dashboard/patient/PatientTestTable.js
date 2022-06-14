@@ -25,7 +25,7 @@ const PatientTestTable = (props) => {
   const navigate = useNavigate();
 
   const [rows, setRows] = useState([]);
-  const { pesel } = props;
+  const { pesel , id} = props;
 
 
   const [loading, setLoading] = useState(true);
@@ -45,7 +45,7 @@ const PatientTestTable = (props) => {
 
 
     console.log('Patients Testing Table');
-    console.log('pesel z props', pesel);
+    console.log('id z props', id);
     showInfo().then(r => {
       console.log('R', r);
     });
@@ -59,7 +59,7 @@ const PatientTestTable = (props) => {
     let productsWithUser = [];
     let myTests = [];
 
-    const q = query(collection(db, `tests/${pesel}/tests`));
+    const q = query(collection(db, `tests/${id}/tests`));
 
     const querySnapshot = await getDocs(q);
     const items = [];
@@ -138,7 +138,7 @@ const PatientTestTable = (props) => {
 
                   </TableRow>
                 </TableHead>
-                <TableBody style={{padding: 10, gap: 5}}>
+                <TableBody style={{padding: 10, gap: 10}}>
                   {rows.map((row, i) => (
 
                     <TableRow
@@ -154,8 +154,8 @@ const PatientTestTable = (props) => {
 
                       <TableCell align='center' component='th' scope='row'>
                         <Button variant='contained' href={row.url}>Download</Button>
-                        <Button variant='contained'
-                                onClick={() => navigate('/visualize-file', { state: { filepath: row.url } })}>Visualize</Button>
+                        {/*<Button variant='contained'*/}
+                        {/*        onClick={() => navigate('/visualize-file', { state: { filepath: row.url } })}>Visualize</Button>*/}
                       </TableCell>
 
 
@@ -174,6 +174,7 @@ const PatientTestTable = (props) => {
 };
 PatientTestTable.propTypes = {
   pesel: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
 
 };
 export default PatientTestTable;

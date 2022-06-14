@@ -67,7 +67,7 @@ const PatientForm = () => {
         birthDay,
         createdAt: serverTimestamp(),
         lastUpdate: serverTimestamp(),
-        tests: doc(db, 'tests', (data.pesel)),
+        tests: doc(db, 'tests', (id)),
 
 
       };
@@ -84,7 +84,7 @@ const PatientForm = () => {
     }
 
     function writePatient(patient) {
-      setDoc(doc(db, 'patients', (patient.pesel)), patient, { merge: true }).then
+      setDoc(doc(db, 'patients', (patient.id)), patient, { merge: true }).then
       ((r) => {
           setErrorType('success');
           setError(`Patient ${patient.pesel} added`);

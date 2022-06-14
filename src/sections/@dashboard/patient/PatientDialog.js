@@ -49,7 +49,7 @@ const PatientDialog = (props) => {
 
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} fullWidth>
       <IconButton style={{ color: 'grey', background: 'white' }} onClick={onClose}>
         <CloseIcon onClick={onClose} />
       </IconButton>
@@ -72,6 +72,7 @@ PatientDialog.propTypes = {
     name: PropTypes.string.isRequired,
     surname: PropTypes.string.isRequired,
     pesel: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
   }),
 };
 export default PatientDialog;

@@ -32,6 +32,9 @@ const PatientCard = (props) => {
         <Typography component='span' variant='h6'>
           Surame: {patient.surname}
         </Typography>
+        <Typography component='span' variant='h6'>
+          Id: {patient.id}
+        </Typography>
       </Stack>
       <Card sx={{ padding: 2 }}>
         <Stack direction='column'>
@@ -43,9 +46,9 @@ const PatientCard = (props) => {
             variant='contained'
             size='small'
             onClick={() => {
-              navigate('/dashboard/test/add-test', { state: { pesel: patient.pesel } });
+              navigate('/dashboard/test/add-test', { state: { pesel: patient.pesel , id:patient.id} });
             }}>Add New Test</Button>
-          <PatientTestTable pesel={patient.pesel} />
+          <PatientTestTable pesel={patient.pesel} id={patient.id} />
         </Stack>
       </Card>
 
