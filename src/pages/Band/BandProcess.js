@@ -120,7 +120,6 @@ export default function Band() {
   useEffect(() => {
 
 
-
     // eslint-disable-next-line
   }, []);
 
@@ -213,23 +212,15 @@ export default function Band() {
     setStatusPliku(`Data saved to storage for patient ${state.pesel}`);
 
 
-    await timeout(1000);
-    navigate('/dashboard/user')
-
-
-  };
-
-  function timeout(delay) {
-    return new Promise( res => setTimeout(res, delay) );
   }
 
-  function handleTimerChange (event){
+  function handleTimerChange(event) {
     setMyTimer(event.target.value);
   };
 
 
   function startRecording() {
-    function uploadToStorage(file) {
+    async function uploadToStorage(file) {
       const storage = getStorage();
       let date = fDateTimeSuffix(Date.now());
       let name = `${state.id}_${date}.csv`;
@@ -241,7 +232,7 @@ export default function Band() {
       };
 
       const uploadTask = uploadBytesResumable(storageRef, file, { metadata: customMetadata });
-      setStatusPliku('Gotowe');
+      setStatusPliku('Done');
 
       console.log('PLIK: ', file);
       uploadTask.on(
@@ -264,8 +255,16 @@ export default function Band() {
         },
       );
 
-      if (progress === 100) navigate('/dashboard/user');
 
+      if (progress === 100){
+        await timeout(1000);
+        navigate('/dashboard/user');}
+
+
+    };
+
+    function timeout(delay) {
+      return new Promise(res => setTimeout(res, delay));
     }
 
 
@@ -332,7 +331,7 @@ export default function Band() {
       },
     });
 
-    const timer$ = timer(mytimer * 1000 *60);
+    const timer$ = timer(mytimer * 1000 * 60);
 
     // put selected observable object into local and start taking samples
     localObservable$ = window.multicastRaw$.pipe(
@@ -389,7 +388,7 @@ export default function Band() {
                       type='number'
                       defaultValue='1'
                       minValue='1'
-                      onChange={(event)=>handleTimerChange(event)}
+                      onChange={(event) => handleTimerChange(event)}
                       InputLabelProps={{
                         shrink: true,
                       }}

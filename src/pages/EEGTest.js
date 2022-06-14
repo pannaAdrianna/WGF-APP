@@ -16,7 +16,7 @@ export const EEGTest = (props) => {
       <Container>
         <Stack direction='row' alignItems='center' justifyContent='space-between' mb={5}>
           <Typography variant='h4' gutterBottom>
-            Add EEG data {state.pesel} {state.id}
+            Add EEG data {state.pesel}
           </Typography>
         </Stack>
         <Grid container spacing={2}>

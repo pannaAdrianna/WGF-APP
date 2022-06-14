@@ -48,7 +48,6 @@ export default function AddFile() {
   };
 
 
-
   // ADD FUNCTION
   function addTest(myurl) {
 
@@ -74,7 +73,7 @@ export default function AddFile() {
     ).catch((e) => {
       console.log(e);
     });
-    setErrorType('success')
+    setErrorType('success');
 
     setError(`Data added to patient: ${pesel}`);
 
@@ -83,8 +82,7 @@ export default function AddFile() {
 
   const handleUpload = async () => {
     const storage = getStorage();
-    let date = fDateTimeSuffix(file.lastModifiedDate);
-    // TODO: czy tu pesel
+    let date = fDateTimeSuffix(file.lastModified);
     const storageRef = ref(storage, `tests/${patientId}/${patientId}_${date}.edf`);
 
 
@@ -109,22 +107,25 @@ export default function AddFile() {
       }, () => {
         // Handle successful uploads on complete
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
           console.log('File available at', downloadURL);
           setUrl(downloadURL);
           addTest(downloadURL);
+          if (progress === 100) {
+            await timeout(1000);
+            navigate('/dashboard/user');
+          }
         });
       },
     );
 
-    await timeout(1000);
-    navigate('/dashboard/user')
+
 
 
   };
 
   function timeout(delay) {
-    return new Promise( res => setTimeout(res, delay) );
+    return new Promise(res => setTimeout(res, delay));
   }
 
   function handleClick() {
@@ -132,7 +133,6 @@ export default function AddFile() {
     console.log('click');
 
   }
-
 
 
   function CircularProgressWithLabel(props) {
@@ -162,7 +162,7 @@ export default function AddFile() {
 
           {progress === 100 ?
             <div>
-              <p>File uploaded to database</p>
+              <p></p>
               {/*<Button onClick={handleClick} variant='contained'>Visualize</Button>*/}
             </div>
             :
