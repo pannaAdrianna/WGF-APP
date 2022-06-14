@@ -49,7 +49,7 @@ export default function AddFile() {
 
 
   // ADD FUNCTION
-  function addTest(myurl) {
+  async function addTest(myurl) {
 
 
     const owner = user ? user.uid : 'unknown';
@@ -76,8 +76,13 @@ export default function AddFile() {
     setErrorType('success');
 
     setError(`Data added to patient: ${pesel}`);
+    await timeout(2000);
+    navigate('/dashboard/user');
 
+  };
 
+  function timeout(delay) {
+    return new Promise(res => setTimeout(res, delay));
   }
 
   const handleUpload = async () => {
@@ -111,22 +116,13 @@ export default function AddFile() {
           console.log('File available at', downloadURL);
           setUrl(downloadURL);
           addTest(downloadURL);
-          if (progress === 100) {
-            await timeout(1000);
-            navigate('/dashboard/user');
-          }
         });
       },
     );
 
 
-
-
   };
 
-  function timeout(delay) {
-    return new Promise(res => setTimeout(res, delay));
-  }
 
   function handleClick() {
     setFileStatus(true); // pokazuje card

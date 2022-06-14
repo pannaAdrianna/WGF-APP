@@ -178,7 +178,9 @@ export default function Band() {
   function renderRecord() {
     funRaw.renderRecord(recordPopChange, recordPop, status, rawSettings, setRawSettings);
   }
-
+  function timeout(delay) {
+    return new Promise(res => setTimeout(res, delay));
+  }
 
   // ADD FUNCTION
   async function addTest(myurl) {
@@ -210,6 +212,9 @@ export default function Band() {
     setChartVisibility(false);
 
     setStatusPliku(`Data saved to storage for patient ${state.pesel}`);
+
+    await timeout(2000);
+    navigate('/dashboard/user');
 
 
   }
@@ -255,10 +260,6 @@ export default function Band() {
         },
       );
 
-
-      if (progress === 100){
-        await timeout(1000);
-        navigate('/dashboard/user');}
 
 
     };
