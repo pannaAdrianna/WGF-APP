@@ -25,6 +25,7 @@ export default function AddFile() {
   const [url, setUrl] = useState('');
   const [progress, setProgress] = useState(0);
   const [pesel, setPesel] = useState('');
+  const [patientId, setPatientId] = useState('');
   const [error, setError] = useState('');
   const [errorType, setErrorType] = useState('error');
 
@@ -34,6 +35,7 @@ export default function AddFile() {
 
     console.log('Select File. Location state patient pesel', state.pesel);
     setPesel(state.pesel);
+    setPatientId(state.id);
     console.log('Select File pesel', pesel);
 
   }, []);
@@ -65,13 +67,14 @@ export default function AddFile() {
     const updateData = { tests: newTest };
     const lastUpdate = { lastUpdate: serverTimestamp() };
 
-    addDoc(collection(db, `tests/${pesel}/tests`), updateData).then
+    addDoc(collection(db, `tests/${state.id}/tests`), updateData).then
     ((r) => {
         console.log('response', r);
       },
     ).catch((e) => {
       console.log(e);
     });
+    setErrorType('success')
 
     setError(`Data added to patient: ${pesel}`);
 
@@ -81,7 +84,8 @@ export default function AddFile() {
   const handleUpload = () => {
     const storage = getStorage();
     let date = fDateTimeSuffix(file.lastModifiedDate);
-    const storageRef = ref(storage, `tests/${pesel}/${pesel}_${date}`);
+    // TODO: czy tu pesel
+    const storageRef = ref(storage, `tests/${patientId}/${patientId}_${date}.edf`);
 
 
     const customMetadata = {
@@ -155,7 +159,7 @@ export default function AddFile() {
           {progress === 100 ?
             <div>
               <p>File uploaded to database</p>
-              <Button onClick={handleClick} variant='contained'>Visualize</Button>
+              {/*<Button onClick={handleClick} variant='contained'>Visualize</Button>*/}
             </div>
             :
             <>

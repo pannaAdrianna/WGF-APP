@@ -16,19 +16,19 @@ export const EEGTest = (props) => {
       <Container>
         <Stack direction='row' alignItems='center' justifyContent='space-between' mb={5}>
           <Typography variant='h4' gutterBottom>
-            Add EEG data {state.pesel}
+            Add EEG data {state.pesel} {state.id}
           </Typography>
         </Stack>
         <Grid container spacing={2}>
           <Grid item xs={3} sm={6} md={3}>
             <AppCardButton title='Upload file' color='info' onClick={() => {
-              navigate('/dashboard/test/add-file', { state: { pesel: state.pesel } });
+              navigate('/dashboard/test/add-file', { state: { pesel: state.pesel, id: state.id} });
             }} icon={'ant-design:file-add-filled'} />
           </Grid>
 
           <Grid item xs={3} sm={6} md={3}>
             <AppCardButton title='Muse Handband' onClick={() => {
-              navigate('/dashboard/test/band', { state: { pesel: state.pesel } });
+              navigate('/dashboard/test/band', { state: { pesel: state.pesel, id: state.id } });
             }} color='info'
                            icon={'ant-design:play-square-outlined'} />
           </Grid>

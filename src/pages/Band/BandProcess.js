@@ -44,7 +44,7 @@ export default function Band() {
   const navigate = useNavigate();
 
 
-  const [mytimer, setMyTimer] = useState(5);
+  const [mytimer, setMyTimer] = useState(1);
 
   const steps = [
     {
@@ -54,13 +54,13 @@ export default function Band() {
     `,
     },
     {
-      label: 'Set up band (załóż)',
+      label: 'Set up band',
       description: '',
 
     },
     {
       label: `Set up timer: ${mytimer}`,
-      description: `Czas badania licznik:` + { mytimer },
+      description: `Timer: ${mytimer} min`,
 
     },
   ];
@@ -115,8 +115,10 @@ export default function Band() {
   showAux = true;
 
   const [statusPliku, setStatusPliku] = useState();
+  const [errorType, setErrorType] = useState('info');
   const [progress, setProgress] = useState(0);
   useEffect(() => {
+
 
 
     // eslint-disable-next-line
@@ -197,7 +199,7 @@ export default function Band() {
     const updateData = { tests: newTest };
     const lastUpdate = { lastUpdate: serverTimestamp() };
 
-    addDoc(collection(db, `tests/${state.pesel}/tests`), updateData).then
+    addDoc(collection(db, `tests/${state.id}/tests`), updateData).then
     ((r) => {
         console.log('response', r);
       },
@@ -207,7 +209,8 @@ export default function Band() {
 
 
     setChartVisibility(false);
-    setStatusPliku(`Data saved to storage for ${state.pesel}`);
+
+    setStatusPliku(`Data saved to storage for patient${state.pesel}`);
 
 
   }
@@ -221,8 +224,8 @@ export default function Band() {
     function uploadToStorage(file) {
       const storage = getStorage();
       let date = fDateTimeSuffix(Date.now());
-      let name = `${state.pesel}_${date}.csv`;
-      const storageRef = ref(storage, `tests/${state.pesel}/${name}`);
+      let name = `${state.id}_${date}.csv`;
+      const storageRef = ref(storage, `tests/${state.id}/${name}`);
       const customMetadata = {
         contentType: 'data/csv',
         name: name,
@@ -321,7 +324,7 @@ export default function Band() {
       },
     });
 
-    const timer$ = timer(mytimer * 1000);
+    const timer$ = timer(mytimer * 1000 *60);
 
     // put selected observable object into local and start taking samples
     localObservable$ = window.multicastRaw$.pipe(
@@ -435,7 +438,7 @@ export default function Band() {
               disabled={status === connectionTranslations.connect}
             >
               Stop</Button>}
-            {statusPliku ? <Alert severity='info'>{statusPliku}</Alert> : null}
+            {statusPliku ? <Alert severity={errorType}>{statusPliku}</Alert> : null}
           </Paper>
         )
         }
