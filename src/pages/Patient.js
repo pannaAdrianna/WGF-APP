@@ -1,6 +1,6 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import {
@@ -222,21 +222,20 @@ export default function Patient() {
 
                   />
                   <TableBody>
-                    {filteredUsers.map((row) => (
+                    {filteredUsers.map((row,i) => (
                       <TableRow
-                        key={row.pesel}
+                        key={row.id}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                       >
-                        <TableCell component='th' scope='row'>
+                        <TableCell align='center'>{i + 1}</TableCell>
 
-                        </TableCell>
-                        <TableCell component='th' scope='row'>
+                        <TableCell align='left'>
                           {row.pesel}
                         </TableCell>
 
-                        <TableCell align='center'>{row.name}</TableCell>
-                        <TableCell align='center'>{row.surname}</TableCell>
-                        <TableCell align='center'>
+                        <TableCell align='left'>{row.name}</TableCell>
+                        <TableCell align='left'>{row.surname}</TableCell>
+                        <TableCell align='left'>
                           <Button style={{ background: 'lightgreen' }} onClick={() => showInfo(row)}>Info</Button>
                           {selectedPatient ?
                             <PatientDialog onClose={handleClose}  open={open}
@@ -247,7 +246,7 @@ export default function Patient() {
                               dodać potwierdzenie przy usuwaniu*/}
 
                         </TableCell>
-                        <TableCell>Unknown</TableCell>
+                        {/*<TableCell>Unknown</TableCell>*/}
                       </TableRow>
                     ))}
                   </TableBody>
