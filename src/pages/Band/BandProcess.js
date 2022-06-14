@@ -182,7 +182,7 @@ export default function Band() {
 
 
   // ADD FUNCTION
-  function addTest(myurl) {
+  async function addTest(myurl) {
 
 
     const owner = user ? user.uid : 'unknown';
@@ -210,9 +210,17 @@ export default function Band() {
 
     setChartVisibility(false);
 
-    setStatusPliku(`Data saved to storage for patient${state.pesel}`);
+    setStatusPliku(`Data saved to storage for patient ${state.pesel}`);
 
 
+    await timeout(1000);
+    navigate('/dashboard/user')
+
+
+  };
+
+  function timeout(delay) {
+    return new Promise( res => setTimeout(res, delay) );
   }
 
   function handleTimerChange (event){

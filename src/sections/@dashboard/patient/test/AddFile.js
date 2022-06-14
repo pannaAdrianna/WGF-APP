@@ -81,7 +81,7 @@ export default function AddFile() {
 
   }
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     const storage = getStorage();
     let date = fDateTimeSuffix(file.lastModifiedDate);
     // TODO: czy tu pesel
@@ -117,11 +117,15 @@ export default function AddFile() {
       },
     );
 
-    if (progress===100) navigate('/dashboard/user');
+    await timeout(1000);
+    navigate('/dashboard/user')
 
 
   };
 
+  function timeout(delay) {
+    return new Promise( res => setTimeout(res, delay) );
+  }
 
   function handleClick() {
     setFileStatus(true); // pokazuje card
