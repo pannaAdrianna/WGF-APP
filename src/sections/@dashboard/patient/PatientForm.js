@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 import { useAuth } from '../../auth/contexts/AuthContext';
-import { Button, Grid, TextField } from '@material-ui/core';
+import { Button, Container, Grid, TextField } from '@material-ui/core';
 import { Alert, IconButton, Stack } from '@mui/material';
 import { db } from '../../../Firebase';
 import { serverTimestamp, setDoc, addDoc, collection, doc, Timestamp, getFirestore } from 'firebase/firestore';
@@ -14,10 +14,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
 import { getDatabase, ref, onValue, set } from 'firebase/database';
+import Page from '../../../components/Page';
+import { useNavigate } from 'react-router-dom';
 
 const PatientForm = () => {
 
     const { user } = useAuth();
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -70,7 +73,15 @@ const PatientForm = () => {
       };
       writePatient(newPatient);
       setLoading(false);
+
+      await timeout(3000);
+      navigate('/dashboard/user')
+
     };
+
+    function timeout(delay) {
+      return new Promise(res => setTimeout(res, delay));
+    }
 
     function writePatient(patient) {
       setDoc(doc(db, 'patients', (patient.pesel)), patient, { merge: true }).then
@@ -83,42 +94,45 @@ const PatientForm = () => {
     }
 
     return (
+      <Page title='Patient Form'>
+        <Container maxWidth='sm'>
 
-
-      <FormContainer
-        onSuccess={onSubmit}
-      >
-        {error && <Alert
-          action={
-            <IconButton
-              aria-label='close'
-              color='inherit'
-              size='small'
-              onClick={() => {
-                setOpen(false);
-              }}
+          <FormContainer
+            onSuccess={onSubmit}
+          >
+            {error && <Alert
+              action={
+                <IconButton
+                  aria-label='close'
+                  color='inherit'
+                  size='small'
+                  onClick={() => {
+                    setOpen(false);
+                  }}
+                >
+                  <CloseIcon fontSize='inherit' />
+                </IconButton>
+              }
+              severity={errorType}
+              sx={{ mb: 2 }}
             >
-              <CloseIcon fontSize='inherit' />
-            </IconButton>
-          }
-          severity={errorType}
-          sx={{ mb: 2 }}
-        >
-          {error}
-        </Alert>}
+              {error}
+            </Alert>}
 
 
-        <Stack spacing={3}>
-          <TextFieldElement id='name' name='name' label='First Name' required />
-          <TextFieldElement id='surname' name='surname' label='Surname' required />
-          <TextFieldElement id='pesel' name='pesel' label='Pesel' required />
-          <Button fullWidth size='large' type='submit' variant='contained' onClick={handleSubmit}>
-            Add
-          </Button>
-        </Stack>
+            <Stack spacing={3}>
+              <TextFieldElement id='name' name='name' label='First Name' required />
+              <TextFieldElement id='surname' name='surname' label='Surname' required />
+              <TextFieldElement id='pesel' name='pesel' label='Pesel' required />
+              <Button size='small' type='submit' variant='contained' onClick={handleSubmit}>
+                Add
+              </Button>
+            </Stack>
 
 
-      </FormContainer>
+          </FormContainer>
+        </Container>
+      </Page>
     );
   }
 ;
