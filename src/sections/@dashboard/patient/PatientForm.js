@@ -75,7 +75,7 @@ const PatientForm = () => {
       setLoading(false);
 
       await timeout(3000);
-      navigate('/dashboard/user')
+      navigate('/dashboard/patients')
 
     };
 
