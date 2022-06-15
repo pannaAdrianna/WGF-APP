@@ -44,7 +44,7 @@ export default function Band() {
   const navigate = useNavigate();
 
 
-  const [mytimer, setMyTimer] = useState(0.5);
+  const [mytimer, setMyTimer] = useState(0.1);
 
   const steps = [
     {
@@ -296,7 +296,7 @@ export default function Band() {
       });
     }
 
-    console.log('Saving ' + mytimer + ' seconds...');
+    console.log('Saving ' + mytimer *60 + ' seconds...');
     var localObservable$ = null;
     const dataToSave = [];
 
