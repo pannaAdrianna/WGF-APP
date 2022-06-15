@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { useAuth } from '../../auth/contexts/AuthContext';
 import { Button, Container, Grid, TextField } from '@material-ui/core';
-import { Alert, IconButton, Stack } from '@mui/material';
+import { Alert, IconButton, Stack, Typography } from '@mui/material';
 import { db } from '../../../Firebase';
 import { serverTimestamp, setDoc, addDoc, collection, doc, Timestamp, getFirestore } from 'firebase/firestore';
 import { FormContainer, PasswordElement, TextFieldElement } from 'react-hook-form-mui';
@@ -96,6 +96,9 @@ const PatientForm = () => {
     return (
       <Page title='Patient Form'>
         <Container maxWidth='sm'>
+          <Typography variant='h4' gutterBottom>
+            Add New patient
+          </Typography>
 
           <FormContainer
             onSuccess={onSubmit}

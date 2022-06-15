@@ -44,7 +44,7 @@ export default function Band() {
   const navigate = useNavigate();
 
 
-  const [mytimer, setMyTimer] = useState(1);
+  const [mytimer, setMyTimer] = useState(0.5);
 
   const steps = [
     {
@@ -214,7 +214,7 @@ export default function Band() {
     setStatusPliku(`Data saved to storage for patient ${state.pesel}`);
 
     await timeout(2000);
-    navigate('/dashboard/user');
+    navigate('/dashboard/patients');
 
 
   }
@@ -286,7 +286,7 @@ export default function Band() {
           console.log('Trying to save');
           var blob = new Blob(
             dataToSave,
-            { type: 'text/plain;charset=utf-8' },
+            { type: 'application/octet-stream' },
           );
           // saveAs(blob, rawSettings.name + '_Recording_' + Date.now() + '.csv');
           uploadToStorage(blob);

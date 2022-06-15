@@ -77,7 +77,7 @@ export default function AddFile() {
 
     setError(`Data added to patient: ${pesel}`);
     await timeout(2000);
-    navigate('/dashboard/user');
+    navigate('/dashboard/patients');
 
   };
 
