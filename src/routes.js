@@ -28,7 +28,7 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <Patient /> },
+        { path: 'patients', element: <Patient /> },
 
 
         { path: 'add-patient', element: <PatientForm /> },
