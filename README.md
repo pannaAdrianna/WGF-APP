@@ -1,5 +1,7 @@
 ## Getting started
 
+Only for developers. If you want to see site go to [LINK](https://moje-eeg.web.app/)
+
 - Recommended `node js 16.x` and `npm 6+`
 - Install dependencies: `npm install` or `yarn install`
 - Start the project: `npm run start` or `yarn start`
@@ -21,5 +23,5 @@ Every time after changes to show on [SITE](https://moje-eeg.web.app/)
 - `yarn build`
 - `firebase deploy`
 
-Open site [LINK](https://moje-eeg.web.app/) if not updated cmd+r (refresh sire)
+Open site [LINK](https://moje-eeg.web.app/) if not updated cmd+r (refresh site)
 
