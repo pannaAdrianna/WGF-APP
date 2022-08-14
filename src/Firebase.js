@@ -16,13 +16,12 @@ import { getStorage,ref } from 'firebase/storage';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const app = firebase.initializeApp({
-  apiKey: 'AIzaSyBNxruiZdBvfq3X_FO9oNEijAq_XEu_wHw',
-  authDomain: 'moje-eeg.firebaseapp.com',
-  projectId: 'moje-eeg',
-  storageBucket: 'moje-eeg.appspot.com',
-  messagingSenderId: '1080822797000',
-  appId: '1:1080822797000:web:caa94fceb1bd6ea35acbfd',
-  measurementId: 'G-4PD1NHNWJZ',
+  apiKey: "AIzaSyDqyMvsxmmGXwT4TgOHRqvz7pS2EUGNzR4",
+  authDomain: "wgf-app.firebaseapp.com",
+  projectId: "wgf-app",
+  storageBucket: "wgf-app.appspot.com",
+  messagingSenderId: "325866270600",
+  appId: "1:325866270600:web:82711657ee30fd01e3943d"
 
 });
 export default app;

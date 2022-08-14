@@ -1,6 +1,6 @@
 {
-  "short_name": "EEG Reader",
-  "name": "EEG",
+  "short_name": "WGF App",
+  "name": "WGF",
   "icons": [
     {
       "src": "favicon/android-chrome-192x192.png",

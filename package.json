@@ -3,7 +3,7 @@
     "npm": "8.x",
     "node": "16.x"
   },
-  "name": "eeg-reader",
+  "name": "wgf-app",
   "author": "Adrianna Boczar",
   "licence": "MIT",
   "version": "0.1.0",
@@ -61,7 +61,7 @@
     "eslint-plugin-tree-shaking": "^1.10.0",
     "espree": "^9.3.2",
     "file-saver": "^2.0.2",
-    "firebase": "^9.8.2",
+    "firebase": "^9.9.2",
     "firebase-tools": "^11.0.1",
     "framer-motion": "^4.1.17",
     "handlebars": "^4.3.0",
