@@ -1,14 +1,38 @@
+// scroll bar
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import 'simplebar/src/simplebar.css';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+import ReactDOM from 'react-dom';
+
+import { BrowserRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+
+//
+import App from './App';
+
+import reportWebVitals from './reportWebVitals';
+import { AppProvider } from '@shopify/polaris';
+
+import enTranslations from '@shopify/polaris/locales/en.json';
+import { AuthProvider } from './sections/auth/contexts/AuthContext';
+
+ReactDOM.render(
+    <React.StrictMode>
+
+        <BrowserRouter>
+            <AuthProvider>
+                <AppProvider i18n={enTranslations}>
+                    <HelmetProvider>
+
+                        <App />
+
+                    </HelmetProvider>
+                </AppProvider>
+            </AuthProvider>
+        </BrowserRouter>
+
+    </React.StrictMode>,
+    document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function
