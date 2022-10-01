@@ -27,6 +27,9 @@ export const DashboardApp=()=> {
         <Typography variant="h4" sx={{ mb: 5 }}>
           Hi {user.email}
         </Typography>
+          <Typography variant="paragraph">
+              Rola
+          </Typography>
 
 
       </Container>

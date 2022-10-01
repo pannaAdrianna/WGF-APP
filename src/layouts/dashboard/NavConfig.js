@@ -11,10 +11,16 @@ const navConfig = [
     path: '/dashboard/app',
     icon: getIcon('eva:pie-chart-2-fill'),
   },
+
   {
-    title: 'patients',
-    path: '/dashboard/patients',
+    title: 'players',
+    path: '/dashboard/players',
     icon: getIcon('eva:people-fill'),
+  },
+  {
+    title: 'games',
+    path: '/dashboard/games',
+    icon: getIcon('eva:shopping-bag-fill'),
   },
   // {
   //   title: 'eegtest',

@@ -81,11 +81,12 @@ export default function Login() {
           <SectionStyle>
 
             <Typography variant='h3' sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
+              Zaloguj się
             </Typography>
-
-
-              <img src='/static/illustrations/illustration_login.png' alt='login' />
+            <Typography variant='h4' sx={{ px: 5, mt: 10, mb: 5 }}>
+              Wolo: imie.nazwisko@wgf.pl hasło: wgf2022
+            </Typography>
+              <img src='static/wgf_logo.png' alt='login' />
 
 
           </SectionStyle>

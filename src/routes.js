@@ -5,16 +5,18 @@ import { DashboardLayout } from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 
-import Patient from './pages/Patient';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
+import MyTest from './pages/MyTest';
 import {DashboardApp} from './pages/DashboardApp';
 
-import AddFile from './sections/@dashboard/patient/test/AddFile';
-
-import PatientForm from './sections/@dashboard/patient/PatientForm';
 import {Navigate, useRoutes} from "react-router-dom";
+import Player from "./pages/Player";
+import Games from "./pages/Games";
+import GameForm from "./sections/@dashboard/games/components/GameForm";
+import AddFile from "./sections/@dashboard/player/test/AddFile";
+import PlayerForm from "./sections/@dashboard/player/PlayerForm";
 
 
 // ----------------------------------------------------------------------
@@ -27,17 +29,25 @@ export  default function Router() {
       element: <DashboardLayout />,
       children: [
         { path: 'app', element: <DashboardApp /> },
-        { path: 'patients', element: <Patient /> },
+
+        { path: 'players', element: <Player /> },
+        { path: 'games', element: <Games /> },
 
 
-        { path: 'add-patient', element: <PatientForm /> },
+
+        { path: 'add-player', element: <PlayerForm /> },
+        { path: 'add-game', element: <GameForm /> },
         {
           path: 'test',
           children: [
-            // { path: 'add-test', element: <EEGTest /> },
             { path: 'add-file', element: <AddFile /> },
           ],
-        }],
+        },
+
+        ],
+
+
+
     },
     {
       path: '/',
@@ -46,6 +56,7 @@ export  default function Router() {
         { path: '/', element: <Navigate to='/login' /> },
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
+        { path: 'mytest', element: <MyTest /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to='/404' /> },
       ],

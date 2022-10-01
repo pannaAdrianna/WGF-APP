@@ -22,15 +22,18 @@ export default function Button(theme) {
         containedPrimary: {
           boxShadow: theme.customShadows.primary
         },
-        containedSecondary: {
-          boxShadow: theme.customShadows.secondary
-        },
         outlinedInherit: {
           border: `1px solid ${theme.palette.grey[500_32]}`,
           '&:hover': {
             backgroundColor: theme.palette.action.hover
           }
         },
+        containedError: {
+          boxShadow: theme.customShadows.error
+        },
+
+
+
         textInherit: {
           '&:hover': {
             backgroundColor: theme.palette.action.hover

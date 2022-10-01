@@ -49,7 +49,8 @@ export default function LoginForm() {
 
         // console.log(res.user)
 
-        navigate('/dashboard/patients', { replace: true });
+
+        navigate('/dashboard/players', { replace: true });
       })
       .catch(err => {
         let message = checkErrorCode(err.code);
