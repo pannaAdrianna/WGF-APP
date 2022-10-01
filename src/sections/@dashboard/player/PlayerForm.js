@@ -14,6 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import {useForm} from 'react-hook-form';
 import Page from '../../../components/Page';
 import {useNavigate} from 'react-router-dom';
+import {namesFromMail} from "../../../utils/strings";
 
 const PlayerForm = () => {
 
@@ -66,6 +67,7 @@ const PlayerForm = () => {
                 birthDay,
                 createdAt: serverTimestamp(),
                 lastUpdate: serverTimestamp(),
+                lastEditBy: namesFromMail(ownerEmail),
                 rentals: doc(db, 'rentals', (id)),
 
             };

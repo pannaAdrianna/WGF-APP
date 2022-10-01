@@ -28,6 +28,20 @@ const GREY = {
   500_80: alpha('#919EAB', 0.8),
 };
 
+const BLUE = {
+  0: '#FFFFFF',
+  100: '#F9FAFB',
+  200: '#F4F6F8',
+  300: '#94b3da',
+  400: '#6ea2d3',
+  500: '#588dc2',
+  600: '#5481a8',
+  700: '#3d5879',
+  800: '#103996',
+  900: '#071628',
+};
+
+
 const PRIMARY = {
   lighter: '#D1E9FC',
   light: '#76B0F1',
@@ -107,13 +121,14 @@ const palette = {
   warning: { ...WARNING },
   error: { ...ERROR },
   grey: GREY,
+  blue: BLUE,
   gradients: GRADIENTS,
   chart: CHART_COLORS,
   divider: GREY[500_24],
   text: { primary: GREY[800], secondary: GREY[600], disabled: GREY[500] },
   background: { paper: '#fff', default: GREY[100], neutral: GREY[200] },
   action: {
-    active: GREY[600],
+    active: BLUE[800],
     hover: GREY[500_8],
     selected: GREY[500_16],
     disabled: GREY[500_80],

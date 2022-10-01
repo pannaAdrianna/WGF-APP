@@ -3,6 +3,15 @@ import {db} from "./Firebase";
 import Game, {gameConverter} from "./sections/@dashboard/games/Game";
 import { getDatabase, ref, child, push, update } from "firebase/database";
 
+export  function addPlayer(player) {
+    setDoc(doc(db, 'players', (player.id)), player, {merge: true}).then
+    ((r) => {
+            return(r)
+        },
+    );
+}
+
+
 export async function getGameInfoById(id) {
     let game = {}
     const ref = (doc(db, "games", id).withConverter(gameConverter));

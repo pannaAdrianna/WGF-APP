@@ -37,13 +37,16 @@ import {
     setDoc,
 } from 'firebase/firestore';
 import {useAuth} from '../sections/auth/contexts/AuthContext';
-import {fDate, fDateTime, formatDate} from "../utils/formatTime";
+
 import {descendingComparator} from "../utils/comparators";
 import PlayerInfoDialog from "../sections/@dashboard/player/PlayerInfoDialog";
 import IconButton from "../theme/overrides/IconButton";
 import {Snackbar} from "@material-ui/core";
 import {MyStopwatch} from "../components/Stopwatch";
 import SearchNotFound from "../components/SearchNotFound";
+import PlayerListHead from "../sections/@dashboard/player/PlayerListHead";
+import PlayerListToolbar from "../sections/@dashboard/player/PlayerListToolbar";
+import {CircularProgressWithLabel} from "../components/CircularProgressWithLabel";
 
 
 const TABLE_HEAD = [
@@ -105,13 +108,10 @@ export default function Player() {
 
     }
 
-
+    // paginacja
     const [page, setPage] = useState(0);
-
     const [order, setOrder] = useState('asc');
-
     const [selected, setSelected] = useState([]);
-
     const [orderBy, setOrderBy] = useState('name');
 
     const [filterSurname, setFilterSurname] = useState('');
@@ -200,17 +200,7 @@ export default function Player() {
     };
 
 
-    function CircularProgressWithLabel(props) {
-        return (
-            <Stack direction='row'>
-                <CircularProgress variant='determinate' {...props} />
-                <Typography variant='caption' component='div' color='text.secondary'>
-                    {`${Math.round(props.value)}%`}
-                </Typography>
 
-            </Stack>
-        );
-    }
 
 
     return (
@@ -236,7 +226,7 @@ export default function Player() {
                 </Stack>
                 {loading ? null :
                     <Card>
-                        <UserListToolbar filterName={filterSurname} onFilterName={handleFilterByName} />
+                        <PlayerListToolbar filterName={filterSurname} onFilterName={handleFilterByName}/>
                         <Scrollbar>
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25]}
@@ -249,7 +239,7 @@ export default function Player() {
                             />
                             <TableContainer sx={{minWidth: 800}}>
                                 <Table>
-                                    <UserListHead
+                                    <PlayerListHead
                                         order={order}
                                         orderBy={orderBy}
                                         headLabel={TABLE_HEAD}
@@ -293,8 +283,8 @@ export default function Player() {
                                     {isUserNotFound && (
                                         <TableBody>
                                             <TableRow>
-                                                <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                                    <SearchNotFound searchQuery={filterSurname} />
+                                                <TableCell align="center" colSpan={6} sx={{py: 3}}>
+                                                    <SearchNotFound searchQuery={filterSurname}/>
                                                 </TableCell>
                                             </TableRow>
                                         </TableBody>
