@@ -26,9 +26,6 @@ const PlayerInfoDialog = (props) => {
 
             {loading ?
                 <DialogContent style={{padding: 10, alignItems: 'center', gap: 10}}>
-                    <Typography variant='h6' gutterBottom>
-                        Use Esc key to close window
-                    </Typography>
                     <DialogTitle>Player Info {player.pesel}</DialogTitle>
                     <PlayerCard player={player}/>
                 </DialogContent>
