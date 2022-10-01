@@ -43,6 +43,7 @@ import PlayerInfoDialog from "../sections/@dashboard/player/PlayerInfoDialog";
 import IconButton from "../theme/overrides/IconButton";
 import {Snackbar} from "@material-ui/core";
 import {MyStopwatch} from "../components/Stopwatch";
+import SearchNotFound from "../components/SearchNotFound";
 
 
 const TABLE_HEAD = [
@@ -113,7 +114,7 @@ export default function Player() {
 
     const [orderBy, setOrderBy] = useState('name');
 
-    const [filterName, setFilterName] = useState('');
+    const [filterSurname, setFilterSurname] = useState('');
 
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -158,7 +159,7 @@ export default function Player() {
     };
 
     const handleFilterByName = (event) => {
-        setFilterName(event.target.value);
+        setFilterSurname(event.target.value);
     };
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - player.length) : 0;
@@ -177,15 +178,15 @@ export default function Player() {
             return a[1] - b[1];
         });
         if (query) {
-            return filter(array, (_user) => _user.first_name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+            return filter(array, (_player) => _player.surname.toLowerCase().indexOf(query.toLowerCase()) !== -1);
         }
         return stabilizedThis.map((el) => el[0]);
     }
 
 
-    const filteredUsers = applySortFilter(player, getComparator(order, orderBy), filterName);
+    const filteredPlayers = applySortFilter(player, getComparator(order, orderBy), filterSurname);
 
-    const isUserNotFound = filteredUsers.length === 0;
+    const isUserNotFound = filteredPlayers.length === 0;
 
 
     const [openInfoPlayerAlert, setOpenInfoPlayerAlert] = useState(false);
@@ -220,12 +221,12 @@ export default function Player() {
                     <Typography variant='h4' gutterBottom>
                         Players
                     </Typography>
-                    {loading ? null : <MyStopwatch/>}
-                    <Button startIcon={<CircularProgressWithLabel value={progress}/>} variant='contained'
-                            onClick={refreshData}>
-                        Refresh data
-                    </Button>
-
+                    {loading ? <>Loading...<CircularProgressWithLabel value={progress}/></> : <> <MyStopwatch/>
+                        <Button variant='contained'
+                                onClick={refreshData}>
+                            Refresh data
+                        </Button> </>
+                    }
 
                     <Button variant='contained' onClick={() => {
                         navigate('/dashboard/add-player');
@@ -233,9 +234,9 @@ export default function Player() {
                         New Player
                     </Button>
                 </Stack>
-                {loading ? <h1>Loading... {player.length}</h1> :
+                {loading ? null :
                     <Card>
-                        {/*<UserListToolbar filterName={filterName} onFilterName={handleFilterByName} />*/}
+                        <UserListToolbar filterName={filterSurname} onFilterName={handleFilterByName} />
                         <Scrollbar>
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25]}
@@ -256,7 +257,7 @@ export default function Player() {
                                         numSelected={selected.length}
                                     />
                                     <TableBody>
-                                        {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => (
+                                        {filteredPlayers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => (
                                             <TableRow
                                                 key={row.id}
                                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -288,6 +289,17 @@ export default function Player() {
                                             </TableRow>
                                         ))}
                                     </TableBody>
+
+                                    {isUserNotFound && (
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                                                    <SearchNotFound searchQuery={filterSurname} />
+                                                </TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    )}
+
                                 </Table>
                             </TableContainer>
                             <TablePagination
