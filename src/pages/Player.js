@@ -41,7 +41,7 @@ import {useAuth} from '../sections/auth/contexts/AuthContext';
 import {descendingComparator} from "../utils/comparators";
 import PlayerInfoDialog from "../sections/@dashboard/player/PlayerInfoDialog";
 import IconButton from "../theme/overrides/IconButton";
-import {Snackbar} from "@material-ui/core";
+import {Grid, Snackbar} from "@material-ui/core";
 import {MyStopwatch} from "../components/Stopwatch";
 import SearchNotFound from "../components/SearchNotFound";
 import PlayerListHead from "../sections/@dashboard/player/PlayerListHead";
@@ -53,7 +53,7 @@ const TABLE_HEAD = [
     // { id: 'id', label: 'uuid', alignRight: false },
     // { id: 'creation_date', label: 'Data dodatnia', alignRight: false },
     // { id: 'id_wgf', label: 'WGF ID', alignRight: false },
-    {id: 'pesel', label: 'Pesel', alignRight: false},
+    // {id: 'pesel', label: 'Pesel', alignRight: false},
     {id: 'first_name', label: 'First Name', alignRight: false},
     {id: 'last_name', label: 'Last Name', alignRight: false},
     {id: ''},
@@ -206,11 +206,10 @@ export default function Player() {
     return (
         <Page title='Player'>
             <Container>
-                <Stack direction='row' alignItems='center' justifyContent='space-between' mb={5}>
-
-                    <Typography variant='h4' gutterBottom>
-                        Players
-                    </Typography>
+                <Typography variant='h4' gutterBottom>
+                    Players
+                </Typography>
+                <Stack sx={{minWidth: 300}} direction='row' alignItems='center' spacing={2} justifyContent='space-between' mb={2} paddingRight={2}>
                     {loading ? <>Loading...<CircularProgressWithLabel value={progress}/></> : <> <MyStopwatch/>
                         <Button variant='contained'
                                 onClick={refreshData}>
@@ -237,7 +236,7 @@ export default function Player() {
                                 onPageChange={handleChangePage}
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                             />
-                            <TableContainer sx={{minWidth: 800}}>
+                            <TableContainer sx={{minWidth: 300}}>
                                 <Table>
                                     <PlayerListHead
                                         order={order}
@@ -265,9 +264,7 @@ export default function Player() {
                                                 {/*<TableCell align='center'>{fDateTime(row.createdAt.toDate())}</TableCell>*/}
                                                 {/*<TableCell align='center'>{row.wgf_temp_id}</TableCell>*/}
 
-                                                <TableCell align='left'>
-                                                    {row.pesel}
-                                                </TableCell>
+                                                {/*<TableCell align='left'>{row.pesel}</TableCell>*/}
 
                                                 <TableCell align='left'>{row.name}</TableCell>
                                                 <TableCell align='left'>{row.surname}</TableCell>

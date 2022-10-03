@@ -9,7 +9,7 @@ import {useNavigate} from 'react-router-dom';
 
 
 import {checkErrorCode, db} from '../../../Firebase';
-import {collection, getDoc, getDocs, query, where} from 'firebase/firestore';
+import {collection, doc, getDoc, getDocs, query, where} from 'firebase/firestore';
 import PropTypes from 'prop-types';
 
 import Test from './test/Test';
@@ -23,6 +23,7 @@ import {MyStopwatch} from "../../../components/Stopwatch";
 import {CircularProgressWithLabel} from "../../../components/CircularProgressWithLabel";
 import {LoadingButton} from "@mui/lab";
 import {Button, Container, Stack, Typography} from '@mui/material';
+import {fetchGameInfo, getGameInfo, getGameInfoById} from "../../../Database";
 
 const TABLE_HEAD = [
     // { id: 'id', label: 'uuid', alignRight: false },
@@ -54,6 +55,7 @@ const PlayerRentTable = (props) => {
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('status');
     const [selected, setSelected] = useState([]);
+    const [gameName, setGameName] = useState('GameName');
 
     // do paginacji
     const [rowsPerPage, setRowsPerPage] = useState(25);
@@ -69,6 +71,7 @@ const PlayerRentTable = (props) => {
 
     const rentals_ref = query(collection(db, `rentals/${id}/rentals`));
     const fetchPlayerRentals = async () => {
+        console.log('rentals for ', id)
         const querySnapshot = await getDocs(rentals_ref);
         const items = [];
         querySnapshot.docs.forEach((doc) => {
@@ -81,11 +84,26 @@ const PlayerRentTable = (props) => {
     };
 
 
+    /*    const fetchGameInfo = async (game_id) => {
+            const game_ref = query(doc(db, `games/${game_id}`));
+
+            const snap = await getDoc(game_ref)
+
+            if (snap.exists()) {
+                console.log('exist')
+                const data = snap.data()
+                console.log('data', data)
+                setGameName(data.name)
+            }
+
+        };*/
+
+
     useEffect(() => {
         console.log(id)
         refreshData()
         // eslint-disable-next-line
-    }, []);
+    }, [gameName]);
 
 
     function refreshData() {
@@ -98,6 +116,12 @@ const PlayerRentTable = (props) => {
             let message = checkErrorCode(err.code);
             console.log(message)
         })
+
+    }
+
+
+    const myName = (id) => {
+        if (id != 'sad') return '7 Cudów Świata'
 
     }
 
@@ -140,9 +164,10 @@ const PlayerRentTable = (props) => {
                                         >
 
                                             <TableCell align='center'>{i + 1}</TableCell>
-                                            <TableCell align='center'>{row.id}</TableCell>
-                                            <TableCell align="center">
 
+                                            <TableCell align='center'>{row.gameId}{myName(row.gameId)} </TableCell>
+
+                                            <TableCell align="center">
                                                 <Label variant="ghost"
                                                        color={(row.status === 'rented' && 'error') || 'success'}>
                                                     {row.status}

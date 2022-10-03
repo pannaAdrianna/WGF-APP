@@ -37,11 +37,5 @@ const PlayerInfoDialog = (props) => {
 PlayerInfoDialog.propTypes = {
     onClose: PropTypes.func.isRequired,
     open: PropTypes.bool.isRequired,
-    player: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        surname: PropTypes.string.isRequired,
-        pesel: PropTypes.string.isRequired,
-        id: PropTypes.string.isRequired,
-    }),
 };
 export default PlayerInfoDialog;
