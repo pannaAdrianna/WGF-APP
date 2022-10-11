@@ -13,7 +13,7 @@ export default function DeleteDialog(props) {
 
 
     useEffect(() => {
-        console.log('props',props)
+
     }, []);
 
 
@@ -40,6 +40,5 @@ DeleteDialog.propTypes = {
     open: PropTypes.bool,
     onClickCancel: PropTypes.func,
     onClickDelete: PropTypes.func,
-    game_id: PropTypes.string,
 
 };

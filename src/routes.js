@@ -17,6 +17,8 @@ import Games from "./pages/Games";
 import GameForm from "./sections/@dashboard/games/components/GameForm";
 import AddFile from "./sections/@dashboard/player/test/AddFile";
 import PlayerForm from "./sections/@dashboard/player/PlayerForm";
+import SimplePage from "./pages/SimplePage";
+import MyGames from "./pages/MyGames";
 
 
 // ----------------------------------------------------------------------
@@ -36,7 +38,7 @@ export  default function Router() {
 
 
         { path: 'add-player', element: <PlayerForm /> },
-        { path: 'add-game', element: <GameForm /> },
+        // { path: 'add-game', element: <GameForm /> },
         {
           path: 'test',
           children: [
@@ -53,10 +55,13 @@ export  default function Router() {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: '/', element: <Navigate to='/login' /> },
+        { path: '/', element: <Navigate to='/simple' /> },
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
         { path: 'mytest', element: <MyTest /> },
+        { path: 'simple', element: <SimplePage /> },
+        { path: 'mygames', element: <MyGames /> },
+        { path: 'add-game', element: <GameForm /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to='/404' /> },
       ],

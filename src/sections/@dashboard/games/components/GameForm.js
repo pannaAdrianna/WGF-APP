@@ -17,6 +17,7 @@ import {useNavigate} from 'react-router-dom';
 import {capitalizeFirstLetter, namesFromMail} from "../../../../utils/strings";
 import {addNewGame} from "../../../../Database";
 import {timeout} from "../../../../utils/timeouts";
+import {game_size, game_types} from "../enums/gameTypes";
 
 const GameForm = () => {
 
@@ -66,7 +67,8 @@ const GameForm = () => {
                 lastEditBy: namesFromMail(ownerEmail),
                 createdAt: serverTimestamp(),
                 lastUpdate: serverTimestamp(),
-                games: doc(db, 'games', (id)),
+                gameType: game_types.other,
+                size: game_size.other
 
             };
             addNewGame(newGame);
@@ -76,13 +78,14 @@ const GameForm = () => {
             setLoading(false);
 
             await timeout(1500);
-            navigate('/dashboard/games')
+            // navigate('/dashboard/games')
+            navigate('/mygames')
 
         };
 
 
         return (
-            <Page title="New Game">
+            <Page title="Add New Game">
                 <Container maxWidth="md">
                     <Typography variant='h4' gutterBottom>
                         Add New Game
@@ -113,11 +116,10 @@ const GameForm = () => {
 
                         <Stack spacing={3}>
                             <TextFieldElement id='name' name='name' label='Name' required/>
-                            <p>Typ dokumentu: dowód, paszport, karta pobytu</p>
-                            <p>Adres zamieszkania</p>
-                            <p>Inne</p>
+                            <p>Wydawnictwo</p>
+                            <p>Kategoria</p>
                         </Stack>
-                        <Button size='small' color="default" type='submit' variant='contained' onClick={handleSubmit}>
+                        <Button size='small' color="primary" type='submit' variant='contained' onClick={handleSubmit}>
                             Add
                         </Button>
 

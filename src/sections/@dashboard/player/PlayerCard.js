@@ -52,7 +52,6 @@ const PlayerCard = (props) => {
             </Stack>
             <Card sx={{padding: 2}}>
                 <Stack direction='column'>
-
                     <Typography component='span' variant='h5'>
                         Rentals
                     </Typography>

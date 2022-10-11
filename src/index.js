@@ -2,37 +2,37 @@
 import React from 'react';
 import 'simplebar/src/simplebar.css';
 
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom/client";
 
-import { BrowserRouter } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
+import {BrowserRouter} from 'react-router-dom';
+import {HelmetProvider} from 'react-helmet-async';
 
 //
 import App from './App';
 
 import reportWebVitals from './reportWebVitals';
-import { AppProvider } from '@shopify/polaris';
+import {AppProvider} from '@shopify/polaris';
 
 import enTranslations from '@shopify/polaris/locales/en.json';
-import { AuthProvider } from './sections/auth/contexts/AuthContext';
+import {AuthProvider} from './sections/auth/contexts/AuthContext';
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
     <React.StrictMode>
 
         <BrowserRouter>
             <AuthProvider>
-                <AppProvider i18n={enTranslations}>
-                    <HelmetProvider>
 
-                        <App />
+                <HelmetProvider>
 
-                    </HelmetProvider>
-                </AppProvider>
+                    <App/>
+
+                </HelmetProvider>
+
             </AuthProvider>
         </BrowserRouter>
 
     </React.StrictMode>,
-    document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function

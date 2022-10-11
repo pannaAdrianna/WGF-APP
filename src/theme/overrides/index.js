@@ -13,15 +13,16 @@ import Autocomplete from './Autocomplete';
 // ----------------------------------------------------------------------
 
 export default function ComponentsOverrides(theme) {
-  return Object.assign(
-    Card(theme),
-    Input(theme),
-    Paper(theme),
-    Button(theme),
-    Tooltip(theme),
-    Backdrop(theme),
-    Typography(theme),
-    CssBaseline(theme),
-    Autocomplete(theme)
-  );
+    return Object.assign(
+        Card(theme),
+        Input(theme),
+        Paper(theme),
+        Button(theme),
+        Tooltip(theme),
+        Backdrop(theme),
+        Typography(theme),
+        CssBaseline(theme),
+        Autocomplete(theme),
+
+    );
 }

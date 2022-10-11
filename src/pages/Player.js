@@ -1,5 +1,5 @@
 import {filter} from 'lodash';
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useCallback, useEffect, useRef, useState} from 'react';
 import {Link as RouterLink, useNavigate} from 'react-router-dom';
 // material
 import {
@@ -25,6 +25,7 @@ import Iconify from '../components/Iconify';
 
 import {UserListHead, UserListToolbar, UserMoreMenu} from '../sections/@dashboard/user';
 import {checkErrorCode, db} from '../Firebase';
+import {FormContainer} from 'react-hook-form-mui';
 import {
     getFirestore,
     collection,
@@ -41,12 +42,14 @@ import {useAuth} from '../sections/auth/contexts/AuthContext';
 import {descendingComparator} from "../utils/comparators";
 import PlayerInfoDialog from "../sections/@dashboard/player/PlayerInfoDialog";
 import IconButton from "../theme/overrides/IconButton";
-import {Grid, Snackbar} from "@material-ui/core";
+import {FormControl, Grid, MenuItem, Select, Snackbar} from "@material-ui/core";
 import {MyStopwatch} from "../components/Stopwatch";
 import SearchNotFound from "../components/SearchNotFound";
 import PlayerListHead from "../sections/@dashboard/player/PlayerListHead";
 import PlayerListToolbar from "../sections/@dashboard/player/PlayerListToolbar";
 import {CircularProgressWithLabel} from "../components/CircularProgressWithLabel";
+import {useForm} from "react-hook-form";
+import {RefreshingSelect} from "../components/RefreshingSelect";
 
 
 const TABLE_HEAD = [
@@ -59,6 +62,7 @@ const TABLE_HEAD = [
     {id: ''},
 ];
 
+
 export default function Player() {
 
 
@@ -69,8 +73,9 @@ export default function Player() {
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
 
-
     const [progress, setProgress] = useState(0);
+    const [intervalSet, setMyInterval] = useState(3600);
+
 
     const q = query(collection(db, 'players'));
     const fetchPlayers = async () => {
@@ -88,14 +93,19 @@ export default function Player() {
 
 
     useEffect(() => {
-        console.log('Players');
         refreshData()
+
+        const interval = setInterval(() => {
+            refreshData()
+
+        }, intervalSet * 1000,);
+        return () => clearInterval(interval);
         // eslint-disable-next-line
-    }, []);
+    }, [intervalSet]);
 
 
     function refreshData() {
-        console.log('Clicked on refresh')
+        console.log('fetching data')
         setLoading(true);
         fetchPlayers().then(r => {
             setPlayers(r);
@@ -199,17 +209,30 @@ export default function Player() {
         // setSelectedValue(value);
     };
 
-
-
-
+    function handleIntervalChange(data){
+        console.log('had', data)
+        setMyInterval(data)
+        refreshData()
+    }
 
     return (
-        <Page title='Player'>
+        <Page title='Players'>
             <Container>
                 <Typography variant='h4' gutterBottom>
                     Players
                 </Typography>
-                <Stack sx={{minWidth: 300}} direction='row' alignItems='center' spacing={2} justifyContent='space-between' mb={2} paddingRight={2}>
+
+                <div>
+                    <Typography variant='h4' gutterBottom>
+                        Data refresh every {intervalSet}
+
+                    </Typography>
+                    <RefreshingSelect myIntervalChild={handleIntervalChange}/>
+
+
+                </div>
+                <Stack sx={{minWidth: 300}} direction='row' alignItems='center' spacing={2}
+                       justifyContent='space-between' mb={2} paddingRight={2}>
                     {loading ? <>Loading...<CircularProgressWithLabel value={progress}/></> : <> <MyStopwatch/>
                         <Button variant='contained'
                                 onClick={refreshData}>

@@ -16,8 +16,8 @@ export const x = () => {
 
 }
 
-export const GameMoreMenu = (props) =>{
-    const {game} = props;
+export const GameMoreMenu = (props) => {
+
     const navigate = useNavigate();
 
     const ref = useRef(null);
@@ -26,12 +26,10 @@ export const GameMoreMenu = (props) =>{
     const [editClick, setEditClick] = useState(false);
     const [alertDeleteOpen, setAlertDeleteOpen] = useState(false);
     const [alertEditOpen, setAlertEditOpen] = useState(false);
+    const [game, setGame] = useState({})
 
 
     useEffect(() => {
-        console.log('props', props)
-        console.log('game', game)
-
     }, []);
 
 
@@ -41,27 +39,33 @@ export const GameMoreMenu = (props) =>{
     }
 
     function handleDelete() {
-        console.log('in dellll', game.id)
         setDeleteClick(true)
-        console.log('game', game)
-        deleteGameById(game.id)
+        deleteGameById(game.id).then(r => console.log('deleted', game.id))
         handleAlertDeleteClose()
+
     }
 
     function handleEdit() {
-        console.log('in edit', game.id)
         setEditClick(true)
     }
 
     return (
-        <>
-            <IconButton ref={ref} onClick={() => setIsOpen(true)}>
+        <div>
+            <IconButton ref={ref} onClick={() => {
+                setIsOpen(true)
+                setGame(props.game)
+            }}>
                 <Iconify icon="eva:more-vertical-fill" width={20} height={20}/>
             </IconButton>
 
-            <DeleteDialog onClose={()=>{setAlertDeleteOpen(false)}}  open={alertDeleteOpen} onClickCancel={handleAlertDeleteClose} onClickDelete={handleDelete}
+
+            <DeleteDialog onClose={() => {
+                setAlertDeleteOpen(false)
+            }} open={alertDeleteOpen} onClickCancel={handleAlertDeleteClose} onClickDelete={handleDelete}
                           game={game}/>
-            <EditGameDialog open={alertEditOpen} game={game} onClose={()=>{setAlertEditOpen(false)}} onClickEdit={handleEdit}/>
+            <EditGameDialog open={alertEditOpen} game={game} onClose={() => {
+                setAlertEditOpen(false)
+            }} onClickEdit={handleEdit}/>
 
 
             <Menu
@@ -92,6 +96,6 @@ export const GameMoreMenu = (props) =>{
                     <ListItemText primary="Edit" primaryTypographyProps={{variant: 'body2'}}/>
                 </MenuItem>
             </Menu>
-        </>
+        </div>
     );
 }

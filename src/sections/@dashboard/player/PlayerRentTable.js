@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
@@ -12,18 +11,18 @@ import {checkErrorCode, db} from '../../../Firebase';
 import {collection, doc, getDoc, getDocs, query, where} from 'firebase/firestore';
 import PropTypes from 'prop-types';
 
-import Test from './test/Test';
-import {useAuth} from '../../auth/contexts/AuthContext';
 import {fDateTime, fDateTimeSuffix, formatDate, fuckDate} from '../../../utils/formatTime';
 import Label from "../../../components/Label";
-import {UserListHead} from "../user";
+
 import RentalTableHead from "../rentals/RentalTableHead";
 import {TablePagination} from "@material-ui/core";
 import {MyStopwatch} from "../../../components/Stopwatch";
 import {CircularProgressWithLabel} from "../../../components/CircularProgressWithLabel";
 import {LoadingButton} from "@mui/lab";
 import {Button, Container, Stack, Typography} from '@mui/material';
-import {fetchGameInfo, getGameInfo, getGameInfoById} from "../../../Database";
+import {updateGameStatus} from "../../../Database";
+import {useAuth} from "../../auth/contexts/AuthContext";
+import {namesFromMail} from "../../../utils/strings";
 
 const TABLE_HEAD = [
     // { id: 'id', label: 'uuid', alignRight: false },
@@ -40,6 +39,7 @@ const TABLE_HEAD = [
 const PlayerRentTable = (props) => {
 
 
+    const {user} = useAuth();
     const navigate = useNavigate();
 
     const [rows, setRows] = useState([]);
@@ -54,7 +54,7 @@ const PlayerRentTable = (props) => {
     // dla tabeli wartosci
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('status');
-    const [selected, setSelected] = useState([]);
+    const [selected, setSelected] = useState({});
     const [gameName, setGameName] = useState('GameName');
 
     // do paginacji
@@ -121,24 +121,27 @@ const PlayerRentTable = (props) => {
 
 
     const myName = (id) => {
-        if (id != 'sad') return '7 Cudów Świata'
+        if (id !== 'sad') return '7 Cudów Świata'
 
     }
 
 
     return (
 
-        <div>
-            {loading ? null : <>
+        <>
+
+
+            {loading ? null : <Stack direction='vertical' sx={{padding: 1, gap: 2}}>
                 <MyStopwatch/>
-                <Button variant='contained'
+                <Button size='small' color="primary" type='submit' variant='contained'
                         onClick={refreshData}>
                     Fetch rentals
                 </Button>
+            </Stack>
 
-            </>
 
             }
+
             {loading ? <LoadingButton loading={loading} variant="outlined"/> :
                 <>
                     {rows.length === 0 ?
@@ -167,7 +170,18 @@ const PlayerRentTable = (props) => {
 
                                             <TableCell align='center'>{row.gameId}{myName(row.gameId)} </TableCell>
 
-                                            <TableCell align="center">
+                                            <TableCell align="center" onClick={() => {
+                                                const ownerEmail = user ? user.email : 'unknown';
+                                                let info = {
+                                                    old_status: row.status,
+                                                    lastEditBy: namesFromMail(ownerEmail),
+                                                }
+
+                                                updateGameStatus(row.gameId, info).then(r => {
+                                                    console.log('respo', r)
+                                                })
+                                            }
+                                            }>
                                                 <Label variant="ghost"
                                                        color={(row.status === 'rented' && 'error') || 'success'}>
                                                     {row.status}
@@ -199,7 +213,7 @@ const PlayerRentTable = (props) => {
                 </>}
 
 
-        </div>
+        </>
     );
 };
 PlayerRentTable.propTypes = {

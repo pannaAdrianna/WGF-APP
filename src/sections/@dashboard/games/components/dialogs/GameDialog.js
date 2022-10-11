@@ -12,8 +12,10 @@ const GameDialog = (props) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        console.log('Game Dialog props');
-        console.log(props);
+        if (open) {
+            console.log('Game Dialog props');
+            console.log(props);
+        }
     }, []);
 
 
@@ -25,7 +27,7 @@ const GameDialog = (props) => {
             {loading ?
                 <DialogContent style={{padding: 10, alignItems: 'center', gap: 10}}>
 
-                    <DialogTitle>Game Info {game.id}</DialogTitle>
+                    <DialogTitle>{game.name}</DialogTitle>
                     <GameCard game={game}/>
                 </DialogContent>
                 : null}
@@ -36,10 +38,5 @@ const GameDialog = (props) => {
 GameDialog.propTypes = {
     onClose: PropTypes.func.isRequired,
     open: PropTypes.bool.isRequired,
-    game: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        id: PropTypes.string.isRequired,
-        status: PropTypes.string.isRequired
-    }),
 };
 export default GameDialog;

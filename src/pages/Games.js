@@ -40,8 +40,14 @@ import {
 import {applySortFilter, getComparator} from "../utils/comparators";
 import Label from "../components/Label";
 
-import {getAllGames, writeNewPost} from "../Database";
+
 import {GameMoreMenu} from "../sections/@dashboard/games/components/GameMoreMenu";
+import {RefreshingSelect} from "../components/RefreshingSelect";
+import {CircularProgressWithLabel} from "../components/CircularProgressWithLabel";
+import {MyStopwatch} from "../components/Stopwatch";
+import GamesListHead from "../sections/@dashboard/games/components/GamesListHead";
+import GamesListToolbar from "../sections/@dashboard/games/components/GameListToolbar";
+import GameDialog from "../sections/@dashboard/games/components/dialogs/GameDialog";
 
 
 const TABLE_HEAD = [
@@ -57,17 +63,22 @@ export default function Games() {
 
     const navigate = useNavigate();
 
-
+    // lisy gier
     const [games, setGames] = useState([]);
     const [rows, setRows] = useState([]);
-    const [loading, setLoading] = useState(true);
 
+    const [loading, setLoading] = useState(true);
     const [progress, setProgress] = useState(0);
+
+
+    const [intervalSet, setMyInterval] = useState(3600);
+
 
     const q = query(collection(db, 'games'));
     const fetchGames = async () => {
         const querySnapshot = await getDocs(q);
         const items = [];
+        setProgress(0)
         querySnapshot.docs.forEach((doc) => {
             items.push(doc.data());
             if (progress + 1 < 100) setProgress(progress + 1)
@@ -79,18 +90,21 @@ export default function Games() {
 
 
     useEffect(() => {
-        console.log('Games');
         refreshData()
 
+        const interval = setInterval(() => {
+            refreshData()
+
+        }, intervalSet * 1000,);
+        return () => clearInterval(interval);
         // eslint-disable-next-line
-    }, []);
+    }, [intervalSet]);
 
 
     function refreshData() {
+        console.log('fetching data')
+        setLoading(true);
         fetchGames().then(r => {
-            console.log('fetch');
-            console.log(r)
-
             setGames(r);
             setRows(r);
 
@@ -102,19 +116,14 @@ export default function Games() {
     }
 
 
-
-
+//paginacja
     const [page, setPage] = useState(0);
-
     const [order, setOrder] = useState('asc');
-
     const [selected, setSelected] = useState([]);
-
     const [orderBy, setOrderBy] = useState('name');
-
     const [filterName, setFilterName] = useState('');
-
     const [rowsPerPage, setRowsPerPage] = useState(10);
+
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -164,8 +173,9 @@ export default function Games() {
 
     const filteredGames = applySortFilter(games, getComparator(order, orderBy), filterName);
 
-
+    //dialogi
     const [open, setOpen] = useState(false);
+    const [showInfoDialog, setShowInfoDialog] = useState(false);
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -176,9 +186,7 @@ export default function Games() {
     };
 
     const [selectedGame, setSelectedGame] = useState({});
-
     const [openAlert, setOpenAlert] = useState(false);
-
     const handleCloseAlert = () => {
         setOpenAlert(false);
     };
@@ -186,16 +194,11 @@ export default function Games() {
         setOpenAlert(true);
     };
 
-    function CircularProgressWithLabel(props) {
-        return (
-            <Stack direction='row'>
-                <CircularProgress variant='determinate' {...props} />
-                <Typography variant='caption' component='div' color='text.secondary'>
-                    {`${Math.round(props.value)}%`}
-                </Typography>
-
-            </Stack>
-        );
+    // odczyt danych
+    function handleIntervalChange(data) {
+        console.log('had', data)
+        setMyInterval(data)
+        refreshData()
     }
 
 
@@ -203,19 +206,31 @@ export default function Games() {
         <Page title='Games'>
 
 
-
-
             <Container>
-                <Stack direction='row' alignItems='center' justifyContent='space-between' mb={5}>
+                <Typography variant='h4' gutterBottom>
+                    Games {games.length}
+                </Typography>
+                <div>
                     <Typography variant='h4' gutterBottom>
-                        Games {games.length}
+                        Data refresh every {intervalSet}
+
                     </Typography>
-                    <Button variant='contained' startIcon={ <CircularProgressWithLabel value={progress}/>} onClick={()=>{console.log('button clicked')}}>
-                        Refresh Table
-                    </Button>
+                    <RefreshingSelect myIntervalChild={handleIntervalChange}/>
+
+
+                </div>
+                <Stack sx={{minWidth: 300}} direction='row' alignItems='center' spacing={2}
+                       justifyContent='space-between' mb={2} paddingRight={2}>
+                    {loading ? <>Loading...<CircularProgressWithLabel value={progress}/></> : <> <MyStopwatch/>
+                        <Button variant='contained'
+                                onClick={refreshData}>
+                            Refresh data
+                        </Button> </>
+                    }
 
                     <Button variant='contained' onClick={() => {
-                        navigate('/dashboard/add-game');
+                        // TODO: zmienic adres dna dashboard/add-game
+                        navigate('/add-game');
                     }} startIcon={<Iconify icon='eva:plus-fill'/>}>
                         New Game
                     </Button>
@@ -225,6 +240,8 @@ export default function Games() {
 
                     <Card>
                         <Scrollbar>
+                            <GamesListToolbar filterName={filterName} onFilterName={handleFilterByName}/>
+
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25]}
                                 component="div"
@@ -236,7 +253,7 @@ export default function Games() {
                             />
                             <TableContainer sx={{minWidth: 800}}>
                                 <Table>
-                                    <UserListHead
+                                    <GamesListHead
                                         order={order}
                                         orderBy={orderBy}
                                         headLabel={TABLE_HEAD}
@@ -250,7 +267,17 @@ export default function Games() {
                                             <TableRow
                                                 key={row.id}
                                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                                onClickCapture={() => {
+                                                    if (!showInfoDialog) {
+                                                        setSelectedGame(row)
+                                                        setShowInfoDialog(true)
+                                                    }
+                                                }}
+
                                             >
+                                                <GameDialog open={showInfoDialog} onClose={() => {
+                                                    setShowInfoDialog(false)
+                                                }} game={selectedGame}/>
                                                 <TableCell align='center'>{i + 1}</TableCell>
                                                 <TableCell align='left'>{row.name}</TableCell>
                                                 <TableCell align="left">
@@ -260,12 +287,7 @@ export default function Games() {
                                                     </Label>
                                                 </TableCell>
                                                 <TableCell align="right">
-                                                    <GameMoreMenu game={{
-                                                        id: row.id,
-                                                        name: row.name,
-                                                        status: row.status,
-                                                        last_edited_by: row.lastEditBy
-                                                    }} />
+                                                    <GameMoreMenu game={selectedGame}/>
                                                 </TableCell>
 
 

@@ -1,3 +1,5 @@
+import firebase from "firebase/compat/app";
+
 class Game {
     constructor(id, name, status, lastEditBy) {
         this.id = id;
@@ -15,7 +17,8 @@ export default Game;
 
 // Firestore data converter
 export const gameConverter = {
-    toFirestore: (game) => {
+
+    toFirestore(game: Game): firebase.firestore.DocumentData {
         return {
             id: game.id,
             name: game.name,
@@ -23,8 +26,14 @@ export const gameConverter = {
             lastEditBy: game.last_edit_by
         };
     },
-    fromFirestore: (snapshot, options) => {
+    fromFirestore(
+        snapshot: firebase.firestore.QueryDocumentSnapshot,
+        options: firebase.firestore.SnapshotOptions
+    ): Game {
         const data = snapshot.data(options);
         return new Game(data.id, data.name, data.status, data.lastEditBy);
     }
+
+
+
 };

@@ -19,7 +19,8 @@ export const EditGameDialog = (props) => {
     }, []);
 
 
-    return (<Dialog open={open} onClose={onClose} fullWidth>
+    return (
+        <Dialog open={open} onClose={onClose} fullWidth>
             <IconButton style={{color: 'text.secondary', background: 'white'}} onClick={onClose}>
                 <CloseIcon/>
             </IconButton>

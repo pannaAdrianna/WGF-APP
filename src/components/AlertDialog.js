@@ -1,8 +1,6 @@
 import {useState} from 'react';
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 import Button from "../theme/overrides/Button";
-import PropTypes from "prop-types";
-import GameDialog from "../sections/@dashboard/games/components/dialogs/GameDialog";
 import {deleteGameById} from "../Database";
 
 export const AlertDialog = (props) => {
