@@ -242,7 +242,7 @@ export default function Player() {
 
                     <Button variant='contained' onClick={() => {
                         navigate('/dashboard/add-player');
-                    }} startIcon={<Iconify icon='eva:plus-fill'/>}>
+                    }} startIcon={<Iconify icon='ic:person-add'/>}>
                         New Player
                     </Button>
                 </Stack>

@@ -1,6 +1,17 @@
 import PropTypes from 'prop-types';
 // material
-import { Box, Checkbox, TableRow, TableCell, TableHead, TableSortLabel } from '@mui/material';
+import {
+    Box,
+    Checkbox,
+    TableRow,
+    TableCell,
+    TableHead,
+    TableSortLabel,
+    InputAdornment,
+    OutlinedInput
+} from '@mui/material';
+import Iconify from "../../../../components/Iconify";
+import {styled} from "@mui/material/styles";
 
 // ----------------------------------------------------------------------
 
@@ -26,15 +37,28 @@ GamesListHead.propTypes = {
     onSelectAllClick: PropTypes.func,
 };
 
+const SearchStyle = styled(OutlinedInput)(({theme}) => ({
+    width: 240,
+    transition: theme.transitions.create(['box-shadow', 'width'], {
+        easing: theme.transitions.easing.easeInOut,
+        duration: theme.transitions.duration.shorter,
+    }),
+    '&.Mui-focused': {width: 320, boxShadow: theme.customShadows.z8},
+    '& fieldset': {
+        borderWidth: `1px !important`,
+        borderColor: `${theme.palette.grey[500_32]} !important`,
+    },
+}));
+
 export default function GamesListHead({
-                                         order,
-                                         orderBy,
-                                         rowCount,
-                                         headLabel,
-                                         numSelected,
-                                         onRequestSort,
-                                         onSelectAllClick,
-                                     }) {
+                                          order,
+                                          orderBy,
+                                          rowCount,
+                                          headLabel,
+                                          numSelected,
+                                          onRequestSort,
+                                          onSelectAllClick,
+                                      }) {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -42,20 +66,16 @@ export default function GamesListHead({
     return (
         <TableHead>
             <TableRow>
-                {/* <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-          />
-        </TableCell>*/}
-                <TableCell align='center'>No</TableCell>
+                <TableCell padding="checkbox">Checkbox
+
+                </TableCell>
                 {headLabel.map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         align={headCell.alignRight ? 'right' : 'left'}
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
+
                         <TableSortLabel
                             hideSortIcon
                             active={orderBy === headCell.id}
@@ -64,7 +84,8 @@ export default function GamesListHead({
                         >
                             {headCell.label}
                             {orderBy === headCell.id ? (
-                                <Box sx={{ ...visuallyHidden }}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</Box>
+                                <Box
+                                    sx={{...visuallyHidden}}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</Box>
                             ) : null}
                         </TableSortLabel>
                     </TableCell>

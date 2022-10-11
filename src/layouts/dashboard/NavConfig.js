@@ -22,11 +22,11 @@ const navConfig = [
     path: '/dashboard/games',
     icon: getIcon('eva:shopping-bag-fill'),
   },
-  // {
-  //   title: 'eegtest',
-  //   path: '/dashboard/test/eegtest',
-  //   icon: getIcon('eva:people-fill'),
-  // },
+  {
+    title: 'rental',
+    path: '/dashboard/rental',
+    icon: getIcon('eva:people-fill'),
+  },
   // {
   //   title: 'visualize',
   //   path: '/dashboard/test/visualize',

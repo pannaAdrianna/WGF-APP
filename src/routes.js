@@ -19,6 +19,7 @@ import AddFile from "./sections/@dashboard/player/test/AddFile";
 import PlayerForm from "./sections/@dashboard/player/PlayerForm";
 import SimplePage from "./pages/SimplePage";
 import MyGames from "./pages/MyGames";
+import RentalSample from "./pages/RentalSample";
 
 
 // ----------------------------------------------------------------------
@@ -34,6 +35,7 @@ export  default function Router() {
 
         { path: 'players', element: <Player /> },
         { path: 'games', element: <Games /> },
+        { path: 'rental', element: <RentalSample /> },
 
 
 
