@@ -87,6 +87,10 @@ export async function updateGame(game) {
 
 
 }
+export function addNewRental(rental, game) {
+    setDoc(doc(db, 'rentals', (game.id)), rental, {merge: true}).then(r =>
+        console.log('response', r))
+}
 
 export function addNewGame(game) {
     setDoc(doc(db, 'games', (game.id)), game, {merge: true}).then(r =>

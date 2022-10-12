@@ -260,7 +260,7 @@ export default function Player() {
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                             />
                             <TableContainer sx={{minWidth: 300}}>
-                                <Table>
+                                <Table size={'medium'}>
                                     <PlayerListHead
                                         order={order}
                                         orderBy={orderBy}

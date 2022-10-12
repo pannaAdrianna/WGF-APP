@@ -148,16 +148,23 @@ export default function RentalSample() {
 
     const handleClick = (event, row) => {
         let name = row.name
-        const selectedIndex = selected.indexOf(name);
+        // const selectedIndex = selected.indexOf(name);
+        const selectedIndex = selected.indexOf(row);
         console.log('selected Index', selectedIndex);
+        console.log('is selected: 0 if not -1', selectedIndex)
+        console.log('before selected', selected)
         let newSelected = [];
+        // if is not selected
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
+            console.log('select', row.name)
+            newSelected = newSelected.concat(selected, row);
         } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
+            console.log('unselect', row.name)
+            // newSelected = newSelected.concat(selected.slice(1));
+            newSelected = newSelected.concat(Object.entries(selected).slice(1));
+        }else if (selectedIndex > 0){
+            // unselect dla jednego wyniku
+            console.log('selected index >0', selectedIndex)
             newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
         }
         setSelected(newSelected);
@@ -209,18 +216,14 @@ export default function RentalSample() {
     }
 
 
-
-
     return (
         <Page title='Rent a Game'>
-
-
             <Container>
-                <Typography variant='h4' gutterBottom>
-                    Games
+                <Typography variant='h3' gutterBottom>
+                    Rent a Game
                 </Typography>
                 <div>
-                    <Typography variant='h4' gutterBottom>
+                    <Typography variant='h6' gutterBottom>
                         Data refresh every {intervalSet}
 
                     </Typography>
@@ -236,20 +239,14 @@ export default function RentalSample() {
                             Refresh data
                         </Button> </>
                     }
-
-                    <Button variant='contained' onClick={() => {
-                        // TODO: zmienic adres dna dashboard/add-game
-                        navigate('/add-game');
-                    }} startIcon={<Iconify icon='eva:plus-fill'/>}>
-                        New Game
-                    </Button>
                 </Stack>
                 {loading ? <h1>Loading... {games.length}</h1> :
 
 
                     <Card>
                         <Scrollbar>
-                            <GamesListToolbar filterName={filterName} onFilterName={handleFilterByName} gamesNames={selected}/>
+                            <GamesListToolbar filterName={filterName} onFilterName={handleFilterByName}
+                                              gamesList={selected}/>
 
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25]}
@@ -261,7 +258,7 @@ export default function RentalSample() {
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                             />
                             <TableContainer sx={{minWidth: 800}}>
-                                <Table>
+                                <Table size={'small'}>
                                     <GamesListHead
                                         order={order}
                                         orderBy={orderBy}
@@ -269,22 +266,26 @@ export default function RentalSample() {
                                         rowCount={games.length}
                                         numSelected={selected.length}
 
+
                                     />
                                     <TableBody>
                                         {filteredGames.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
-                                            const isItemSelected = selected.indexOf(row.name) !== -1;
+                                            const isItemSelected = selected.indexOf(row) !== -1;
+
                                             return (
 
                                                 <TableRow
                                                     key={row.id}
                                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                                    tabIndex={-1}
 
                                                 >
                                                     <GameDialog open={showInfoDialog} onClose={() => {
                                                         setShowInfoDialog(false)
                                                     }} game={selectedGame}/>
                                                     <TableCell padding="checkbox">
-                                                        <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, row)} />
+                                                        <Checkbox checked={isItemSelected}
+                                                                  onChange={(event) => handleClick(event, row)}/>
                                                     </TableCell>
                                                     <TableCell align='left'
                                                                onClickCapture={() => {
