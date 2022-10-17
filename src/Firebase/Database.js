@@ -10,12 +10,12 @@ import {
     setDoc,
     serverTimestamp
 } from "firebase/firestore";
-import {db} from "./Firebase";
-import Game, {gameConverter} from "./sections/@dashboard/games/Game";
-import {getDatabase, ref, child, push, update} from "firebase/database";
+import {db} from "../Firebase";
+import Game, {gameConverter} from "../sections/@dashboard/games/Game";
+import {getDatabase, ref, child, push, update,orderByChild} from "firebase/database";
 import {useState} from "react";
-import {namesFromMail} from "./utils/strings";
-import {useAuth} from "./sections/auth/contexts/AuthContext";
+import {namesFromMail} from "../utils/strings";
+import {useAuth} from "../sections/auth/contexts/AuthContext";
 
 export function addPlayer(player) {
     setDoc(doc(db, 'players', (player.id)), player, {merge: true}).then
@@ -63,39 +63,57 @@ export async function deleteGameById(id) {
 
 export async function updateGameStatus(id, info) {
     const ref = (doc(db, "games", id).withConverter(gameConverter));
-    let new_status = ''
-    if (info.old_status === 'rented') new_status = 'available'
-    else new_status = 'rented'
     await updateDoc(ref, {
-        status: new_status,
+        status: info.new_status,
         lastEditBy: info.lastEditBy,
-        lastUpdate: serverTimestamp()
+        lastUpdate: serverTimestamp(),
+        rentedBy: info.rentedBy
     });
 }
 
 
 export async function updateGame(game) {
     const ref = (doc(db, "games", game.id).withConverter(gameConverter));
-
-
     await updateDoc(ref, {
         name: game.name,
         lastEditBy: game.lastEditBy,
         status: game.status,
-        lastUpdate: game.lastUpdate
+        lastUpdate: serverTimestamp(),
     });
 
 
 }
-export function addNewRental(rental, game) {
-    setDoc(doc(db, 'rentals', (game.id)), rental, {merge: true}).then(r =>
-        console.log('response', r))
+
+
+export function addNewRental(rental, game, info) {
+    setDoc(doc(db, `rentals/${game.id}/rentals/${rental.id}`), rental, {merge: true}).then((r) => {
+        updateGameStatus(game.id, info).then(r => {
+            console.log('resp from updating Game', r)
+        })
+
+    })
 }
+
+export async function getRentalHistoryOfGame(game_id) {
+    let history = []
+    let query = await getDocs(collection(db, `rentals/${game_id}/rentals`))
+    query.docs.forEach((doc) => {
+        history.push(doc.data());
+    });
+
+    return history;
+}
+
+export async function updateRental(reference, info) {
+
+}
+
 
 export function addNewGame(game) {
     setDoc(doc(db, 'games', (game.id)), game, {merge: true}).then(r =>
         console.log('response', r))
 }
+
 export function addNewImported(game) {
     setDoc(doc(db, 'imported', (game.id)), game, {merge: true}).then(r =>
         console.log('response', r))

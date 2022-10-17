@@ -28,10 +28,11 @@ const PlayerForm = () => {
 
 
         const [birthDay, setBirthDay] = useState(new Date());
-        const [error, setError] = useState('');
+
 
         const [loading, setLoading] = useState(false);
         const [open, setOpen] = useState(true);
+        const [error, setError] = useState('');
         const [errorType, setErrorType] = useState('error');
         const {register, handleSubmit, watch, formState: {errors}} = useForm();
 
@@ -41,9 +42,9 @@ const PlayerForm = () => {
             // eslint-disable-next-line
         }, []);
 
-    function capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
 
 
         const onSubmit = async (data) => {
@@ -68,7 +69,6 @@ const PlayerForm = () => {
                 createdAt: serverTimestamp(),
                 lastUpdate: serverTimestamp(),
                 lastEditBy: namesFromMail(ownerEmail),
-                rentals: doc(db, 'rentals', (id)),
 
             };
             writePlayer(newPlayer);

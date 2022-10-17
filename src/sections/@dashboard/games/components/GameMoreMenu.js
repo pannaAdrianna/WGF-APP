@@ -4,7 +4,7 @@ import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import {Menu, MenuItem, IconButton, ListItemIcon, ListItemText} from '@mui/material';
 // component
 import Iconify from '../../../../components/Iconify';
-import {deleteGameById, getGameInfoById} from "../../../../Database";
+import {deleteGameById, getGameInfoById} from "../../../../Firebase/Database";
 import DeleteDialog from "./dialogs/DeleteGameDialog";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 import Button from "../../../../theme/overrides/Button";

@@ -12,9 +12,10 @@ import {useForm} from "react-hook-form";
 import {v4 as uuidv4} from "uuid";
 import * as Papa from "uuid";
 import {capitalizeFirstLetter, namesFromMail} from "../utils/strings";
-import {serverTimestamp} from "firebase/firestore";
+import {doc, serverTimestamp} from "firebase/firestore";
 import {game_size, game_types} from "../sections/@dashboard/games/enums/gameTypes";
-import {addNewImported,addNewGame} from "../Database";
+import {addNewImported,addNewGame} from "../Firebase/Database";
+import {db} from "../Firebase";
 
 // ----------------------------------------------------------------------
 
@@ -73,7 +74,6 @@ export default function SimplePage() {
             newline: "",
             complete: function (results, file) {
                 resolve(results.data);
-
                 setList(Array.from(results.data))
             }
         })
@@ -85,10 +85,11 @@ export default function SimplePage() {
         let counter = 0
 
         for(let i=0;i<list.length; i=i+100){
+            let id = uuidv4();
             const newGame = {
                 name: capitalizeFirstLetter(list[i].tytul),
                 status: 'available',
-                id: uuidv4(),
+                id: id,
                 addedBy: 'admin',
                 lastEditBy: 'admin',
                 createdAt: serverTimestamp(),
@@ -98,7 +99,9 @@ export default function SimplePage() {
                 min: list[i].min,
                 max: list[i].max,
                 age: list[i].wiek.toString(),
-                duration: list[i].czas_trwania.toString()
+                duration: list[i].czas_trwania.toString(),
+                rentals: doc(db, 'rentals', (id)),
+                rentedBy: ''
 
             };
             addNewGame(newGame)

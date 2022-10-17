@@ -15,6 +15,7 @@ import {AppProvider} from '@shopify/polaris';
 
 import enTranslations from '@shopify/polaris/locales/en.json';
 import {AuthProvider} from './sections/auth/contexts/AuthContext';
+import {SnackbarProvider} from "notistack";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -24,8 +25,10 @@ root.render(
             <AuthProvider>
 
                 <HelmetProvider>
+                    < SnackbarProvider maxSnack={3}>
 
-                    <App/>
+                        <App/>
+                    </SnackbarProvider>
 
                 </HelmetProvider>
 

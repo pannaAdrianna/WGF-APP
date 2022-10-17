@@ -3,6 +3,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import {Link as RouterLink, useNavigate} from 'react-router-dom';
 // material
 import {
+    Snackbar,
     Card,
     Table,
     Stack,
@@ -15,7 +16,7 @@ import {
     Container,
     Typography,
     TableContainer,
-    TablePagination, CircularProgress,
+    TablePagination, CircularProgress, IconButton,
 } from '@mui/material';
 // components
 import Page from '../components/Page';
@@ -34,7 +35,7 @@ import {
     getDocs,
     updateDoc,
     deleteField,
-    setDoc,
+    setDoc, serverTimestamp,
 } from 'firebase/firestore';
 
 import {applySortFilter, getComparator} from "../utils/comparators";
@@ -48,19 +49,36 @@ import {MyStopwatch} from "../components/Stopwatch";
 import GamesListHead from "../sections/@dashboard/games/components/GamesListHead";
 import GamesListToolbar from "../sections/@dashboard/games/components/GameListToolbar";
 import GameDialog from "../sections/@dashboard/games/components/dialogs/GameDialog";
+import {v4 as uuidv4} from "uuid";
+import {namesFromMail} from "../utils/strings";
+import {addNewRental, updateGameStatus} from "../Firebase/Database";
+import {useAuth} from "../sections/auth/contexts/AuthContext";
+import CloseIcon from "@mui/icons-material/Close";
 
+import MuiAlert from '@mui/material/Alert';
+import {useSnackbar} from 'notistack';
+
+import {timeout} from '../utils/timeouts'
 
 const TABLE_HEAD = [
     // { id: 'id', label: 'id', alignRight: false },
     {id: 'name', label: 'Name', alignRight: false},
     {id: 'status', label: 'Status', alignRight: false},
+    {id: 'gameType', label: 'Game Type', alignRight: false},
+    {id: 'age', label: 'Age', alignRight: false},
+    {id: 'size', label: 'Box Size', alignRight: false},
+    {id: 'min', label: 'Min', alignRight: false},
+    {id: 'max', label: 'Max', alignRight: false},
+    {id: 'duration', label: 'Duration', alignRight: false},
     {id: ''},
 ];
 
-
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 export default function Games() {
 
-
+    const {enqueueSnackbar} = useSnackbar();
     const navigate = useNavigate();
 
     // lisy gier
@@ -72,6 +90,14 @@ export default function Games() {
 
 
     const [intervalSet, setMyInterval] = useState(3600);
+
+    const {user} = useAuth();
+    const ownerEmail = user ? user.email : 'unknown';
+
+    //dialogi
+    const [open, setOpen] = useState(false);
+    const [showInfoDialog, setShowInfoDialog] = useState(false);
+    const [selectedGame, setSelectedGame] = useState({});
 
 
     const q = query(collection(db, 'games'));
@@ -102,6 +128,7 @@ export default function Games() {
 
 
     function refreshData() {
+        setSelected([])
         console.log('fetching data')
         setLoading(true);
         fetchGames().then(r => {
@@ -131,26 +158,23 @@ export default function Games() {
         setOrderBy(property);
     };
 
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = games.map((n) => n.pesel);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
-    };
 
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
-        console.log('selected Index', selectedIndex);
+    const handleClick = (event, row) => {
+        let name = row.name
+        // const selectedIndex = selected.indexOf(name);
+        const selectedIndex = selected.indexOf(row);
         let newSelected = [];
+        // if is not selected
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
+            console.log('select', row.name)
+            newSelected = newSelected.concat(selected, row);
         } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
+            console.log('unselect', row.name)
+            // newSelected = newSelected.concat(selected.slice(1));
+            newSelected = newSelected.concat(Object.entries(selected).slice(1));
         } else if (selectedIndex > 0) {
+            // unselect dla jednego wyniku
+            console.log('selected index >0', selectedIndex)
             newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
         }
         setSelected(newSelected);
@@ -173,74 +197,58 @@ export default function Games() {
 
     const filteredGames = applySortFilter(games, getComparator(order, orderBy), filterName);
 
-    //dialogi
-    const [open, setOpen] = useState(false);
-    const [showInfoDialog, setShowInfoDialog] = useState(false);
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-        // setSelectedValue(value);
-    };
-
-    const [selectedGame, setSelectedGame] = useState({});
-    const [openAlert, setOpenAlert] = useState(false);
-    const handleCloseAlert = () => {
-        setOpenAlert(false);
-    };
-    const handleOpenAlert = () => {
-        setOpenAlert(true);
-    };
 
     // odczyt danych
     function handleIntervalChange(data) {
-        console.log('had', data)
         setMyInterval(data)
         refreshData()
     }
 
 
     return (
-        <Page title='Games'>
-
-
+        <Page title='Games List'>
             <Container>
-                <Typography variant='h4' gutterBottom>
-                    Games {games.length}
+                <Typography variant='h3' gutterBottom>
+                    Games List
                 </Typography>
-                <div>
-                    <Typography variant='h4' gutterBottom>
-                        Data refresh every {intervalSet}
 
-                    </Typography>
+                <Typography variant='h6' gutterBottom>
+                    Data refresh every
                     <RefreshingSelect myIntervalChild={handleIntervalChange}/>
+                </Typography>
 
 
-                </div>
                 <Stack sx={{minWidth: 300}} direction='row' alignItems='center' spacing={2}
                        justifyContent='space-between' mb={2} paddingRight={2}>
-                    {loading ? <>Loading...<CircularProgressWithLabel value={progress}/></> : <> <MyStopwatch/>
+                    {loading ? <>Loading...<CircularProgressWithLabel value={progress}/></> : <>
                         <Button variant='contained'
                                 onClick={refreshData}>
                             Refresh data
-                        </Button> </>
+                        </Button>
+                        <MyStopwatch/>
+                    </>
                     }
+                    <div>
+                        <Button variant='contained'
+                                onClick={() => {
+                                    navigate('/dashboard/add-game')
+                                }}>
+                            Add New Game
+                        </Button>
+                    </div>
 
-                    <Button variant='contained' onClick={() => {
-                        // TODO: zmienic adres dna dashboard/add-game
-                        navigate('/add-game');
-                    }} startIcon={<Iconify icon='eva:plus-fill'/>}>
-                        New Game
-                    </Button>
                 </Stack>
                 {loading ? <h1>Loading... {games.length}</h1> :
 
 
                     <Card>
                         <Scrollbar>
-                            <GamesListToolbar filterName={filterName} onFilterName={handleFilterByName}/>
+                            <GamesListToolbar filterName={filterName} onFilterName={handleFilterByName}
+                                              gamesList={selected}/>
+                            <Stack direction='row' spacing={2}
+                                   justifyContent='flex-start' paddingRight={2} paddingLeft={2} paddingTop={2}>
+
+                            </Stack>
 
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25]}
@@ -252,47 +260,61 @@ export default function Games() {
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                             />
                             <TableContainer sx={{minWidth: 800}}>
-                                <Table>
+                                <Table size={'small'}>
                                     <GamesListHead
                                         order={order}
                                         orderBy={orderBy}
                                         headLabel={TABLE_HEAD}
                                         rowCount={games.length}
                                         numSelected={selected.length}
+                                        isRent={false}
+
 
                                     />
+                                    <GameDialog open={showInfoDialog} onClose={() => {
+                                        setShowInfoDialog(false)
+                                    }} game={selectedGame}/>
                                     <TableBody>
-                                        {filteredGames.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => (
+                                        {filteredGames.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
+                                            const isItemSelected = selected.indexOf(row) !== -1;
 
-                                            <TableRow
-                                                key={row.id}
-                                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                                                onClickCapture={() => {
-                                                    if (!showInfoDialog) {
-                                                        setSelectedGame(row)
-                                                        setShowInfoDialog(true)
-                                                    }
-                                                }}
+                                            return (
 
-                                            >
-                                                <GameDialog open={showInfoDialog} onClose={() => {
-                                                    setShowInfoDialog(false)
-                                                }} game={selectedGame}/>
-                                                <TableCell align='center'>{i + 1}</TableCell>
-                                                <TableCell align='left'>{row.name}</TableCell>
-                                                <TableCell align="left">
-                                                    <Label variant="ghost"
-                                                           color={(row.status === 'rented' && 'error') || 'success'}>
-                                                        {row.status}
-                                                    </Label>
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    <GameMoreMenu game={selectedGame}/>
-                                                </TableCell>
+                                                <TableRow
+                                                    key={row.id}
+                                                    sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                                    tabIndex={-1}
+
+                                                >
+                                                    <TableCell align='left'
+                                                               onClickCapture={() => {
+                                                                   if (!showInfoDialog) {
+                                                                       setSelectedGame(row)
+                                                                       setShowInfoDialog(true)
+                                                                   }
+                                                               }}>{row.name}</TableCell>
+                                                    <TableCell align="left">
+                                                        <Label variant="ghost"
+                                                               color={(row.status === 'rented' && 'error') || 'success'}>
+                                                            {row.status}
+                                                        </Label>
+                                                    </TableCell>
+                                                    <TableCell align='left'>{row.gameType}</TableCell>
+                                                    <TableCell align='left'>{row.age}</TableCell>
+                                                    <TableCell align='left'>{row.size}</TableCell>
+                                                    <TableCell align='left'>{row.min}</TableCell>
+                                                    <TableCell align='left'>{row.max}</TableCell>
+                                                    <TableCell align='left'>{row.duration}</TableCell>
+                                                    <TableCell align="right">
+                                                        <GameMoreMenu game={selectedGame}/>
+                                                    </TableCell>
 
 
-                                            </TableRow>
-                                        ))}
+                                                </TableRow>
+
+
+                                            )
+                                        })}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
@@ -314,5 +336,6 @@ export default function Games() {
 
             </Container>
         </Page>
-    );
+    )
+        ;
 }

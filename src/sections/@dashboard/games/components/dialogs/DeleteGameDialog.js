@@ -1,6 +1,6 @@
 import {Dialog, DialogContent, IconButton, Button, Card, DialogTitle} from '@mui/material';
 import * as PropTypes from "prop-types";
-import {getGameInfoById} from "../../../../../Database";
+import {getGameInfoById} from "../../../../../Firebase/Database";
 import {useEffect, useState} from "react";
 import {DialogActions, DialogContentText} from "@material-ui/core";
 

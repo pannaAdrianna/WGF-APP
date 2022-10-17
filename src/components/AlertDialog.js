@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 import Button from "../theme/overrides/Button";
-import {deleteGameById} from "../Database";
+import {deleteGameById} from "../Firebase/Database";
 
 export const AlertDialog = (props) => {
 

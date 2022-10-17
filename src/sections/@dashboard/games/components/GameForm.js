@@ -15,7 +15,7 @@ import {useForm} from 'react-hook-form';
 import Page from '../../../../components/Page';
 import {useNavigate} from 'react-router-dom';
 import {capitalizeFirstLetter, namesFromMail} from "../../../../utils/strings";
-import {addNewGame} from "../../../../Database";
+import {addNewGame} from "../../../../Firebase/Database";
 import {timeout} from "../../../../utils/timeouts";
 import {game_size, game_types} from "../enums/gameTypes";
 
@@ -68,7 +68,8 @@ const GameForm = () => {
                 createdAt: serverTimestamp(),
                 lastUpdate: serverTimestamp(),
                 gameType: game_types.other,
-                size: game_size.other
+                size: game_size.other,
+                rentals: doc(db, 'rentals', (id)),
 
             };
             addNewGame(newGame);

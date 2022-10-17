@@ -6,6 +6,7 @@ export function RefreshingSelect(props){
 
 
     return(
+
         <Select
             onChange={(e) => props.myIntervalChild(parseInt(e.target.value))}
             onChangeCapture={(e) => props.myIntervalChild(parseInt(e.target.value))}

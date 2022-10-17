@@ -35,6 +35,7 @@ GamesListHead.propTypes = {
     numSelected: PropTypes.number,
     onRequestSort: PropTypes.func,
     onSelectAllClick: PropTypes.func,
+    isRent: PropTypes.bool,
 };
 
 const SearchStyle = styled(OutlinedInput)(({theme}) => ({
@@ -58,6 +59,7 @@ export default function GamesListHead({
                                           numSelected,
                                           onRequestSort,
                                           onSelectAllClick,
+                                          isRent
                                       }) {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
@@ -66,9 +68,10 @@ export default function GamesListHead({
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox">Checkbox
+                {!isRent ? null : (
+                    <TableCell padding="checkbox">Checkbox
 
-                </TableCell>
+                    </TableCell>)}
                 {headLabel.map((headCell) => (
                     <TableCell
                         key={headCell.id}

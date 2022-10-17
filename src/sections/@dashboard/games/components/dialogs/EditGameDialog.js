@@ -14,8 +14,6 @@ export const EditGameDialog = (props) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        console.log('Edit Game Dialog props');
-        console.log(props);
     }, []);
 
 

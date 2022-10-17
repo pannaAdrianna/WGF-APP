@@ -20,7 +20,7 @@ import {MyStopwatch} from "../../../components/Stopwatch";
 import {CircularProgressWithLabel} from "../../../components/CircularProgressWithLabel";
 import {LoadingButton} from "@mui/lab";
 import {Button, Container, Stack, Typography} from '@mui/material';
-import {updateGameStatus} from "../../../Database";
+import {updateGameStatus} from "../../../Firebase/Database";
 import {useAuth} from "../../auth/contexts/AuthContext";
 import {namesFromMail} from "../../../utils/strings";
 

@@ -8,30 +8,27 @@ import {useNavigate} from 'react-router-dom';
 const GameDialog = (props) => {
     const {onClose, open, game} = props;
     const navigate = useNavigate();
-    const [selectedGame, setSelectedGame] = useState({});
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (open) {
-            console.log('Game Dialog props');
-            console.log(props);
-        }
-    }, []);
+    }, [game]);
 
 
     return (
-        <Dialog open={open} onClose={onClose} fullWidth>
-            <IconButton style={{color: 'grey', background: 'white'}} onClick={onClose}>
-                <CloseIcon/>
-            </IconButton>
-            {loading ?
-                <DialogContent style={{padding: 10, alignItems: 'center', gap: 10}}>
+        <>
+            <Dialog open={open} onClose={onClose} fullWidth>
+                <IconButton style={{color: 'grey', background: 'white'}} onClick={onClose}>
+                    <CloseIcon/>
+                </IconButton>
+                {loading ?
+                    <DialogContent style={{padding: 10, alignItems: 'center', gap: 10}}>
 
-                    <DialogTitle>{game.name}</DialogTitle>
-                    <GameCard game={game}/>
-                </DialogContent>
-                : null}
-        </Dialog>
+                        <DialogTitle>{game.name}</DialogTitle>
+                        <GameCard game={game}/>
+                    </DialogContent>
+                    : null}
+            </Dialog>
+        </>
     );
 };
 
